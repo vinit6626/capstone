@@ -4,35 +4,37 @@
     <h2 class="text-center mt-4">Trendify</h2>
     <p style="color:" class="text-center"></p>
 
+    <p class="text-center"><%= msg %></p>
     <div class="row">
       <!-- login -->
       <div class="col-sm-6">
+
         <div class="card">
           <div class="card-body">
-            <form name="myForm" action="/register_user" method="post" class="container userForm"  onsubmit ="return validateForm()">
+            <form name="myForm" action="/register_user" method="post" class="container userForm" onsubmit="return validateForm()">
               <h3 class="card-title center mb-4 text-center"><b>Sign up</b></h3>
-
               <div class="form-group">
-                <label for="exampleInputEmail1">User Name</label>
-                <input type="email" class="form-control padding04" id="exampleInputEmail1"
-                  aria-describedby="emailHelp" name="email" required placeholder="Enter email">
+                  <label for="exampleInputEmail1">Email</label>
+                  <input type="email" class="form-control padding04" id="exampleInputEmail1"
+                         aria-describedby="emailHelp" name="email" placeholder="Enter email">
               </div>
               <div class="form-group">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control padding04" id="exampleInputPassword1"
-                  placeholder="Password" name="password" required min="8">
+                  <label for="exampleInputPassword1">Password</label>
+                  <input type="password" class="form-control padding04" id="exampleInputPassword1"
+                         placeholder="Password" name="password">
               </div>
               <div class="form-group">
                 <label for="exampleInputPassword2">Confirm Password</label>
                 <input type="password" class="form-control" id="exampleInputPassword2"
-                  placeholder="Password" min="8" required name="c_password">
-                  <span id = "message2" style="color:red"> </span> 
-              </div>
+                       placeholder="Confirm password" name="c_password">
+                <span id="message2" style="color:red"></span>
+            </div>
+            
               <p class="text-center">
-
-              <button type="submit" class="btn btn-primary">Sign up</button>
+                  <button type="submit" class="btn btn-primary">Sign up</button>
               </p>
-            </form>
+          </form>
+          
           </div>
         </div>
       </div>
@@ -43,18 +45,20 @@
       <div class="col-sm-6">
         <div class="card">
           <div class="card-body">
-            <form name="myForm" action="/user_verification" method="post" class="container userForm">
+            <form name="myForm1" action="/user_verification" method="post" class="container userForm" onsubmit="return validateForm1()">
               <h3 class="card-title center mb-4 text-center "><b>Login</b></h3>
 
               <div class="form-group">
                 <label for="exampleInputEmail2">User Name</label>
                 <input type="email" class="form-control padding04" id="exampleInputEmail2"
-                  aria-describedby="emailHelp" name="email" required placeholder="Enter email">
+                  aria-describedby="emailHelp" name="email"  placeholder="Enter email">
               </div>
               <div class="form-group">
                 <label for="exampleInputPassword3">Password</label>
                 <input type="password" class="form-control padding04" id="exampleInputPassword3"
-                  placeholder="Password" name="password" required min="8">
+                  placeholder="Password" name="password"  >
+                <span id="message1" style="color:red"></span>
+
               </div>
               <p class="text-center">
 
@@ -81,4 +85,57 @@
         }  
     }
   </script>
+
+  <!-- Add this script in the <head> section of your HTML -->
+<script>
+  function validateForm() {
+    const email = document.forms["myForm"]["email"].value;
+    const password = document.forms["myForm"]["password"].value;
+    const confirmPassword = document.forms["myForm"]["c_password"].value;
+    const message = document.getElementById("message2");
+
+    if (email === "") {
+      message.innerHTML = "Email must be filled out";
+      return false;
+    }
+
+    if (password === "") {
+      message.innerHTML = "Password must be filled out";
+      return false;
+    }
+
+    // if (password.length < 8) {
+    //   message.innerHTML = "Password must be at least 8 characters long";
+    //   return false;
+    // }
+
+    if (password !== confirmPassword) {
+      message.innerHTML = "Passwords do not match";
+      return false;
+    }
+    return true;
+  }
+</script>
+
+<script>
+  function validateForm1() {
+    const email = document.forms["myForm1"]["email"].value;
+    const password = document.forms["myForm1"]["password"].value;
+    const message = document.getElementById("message1");
+
+    if (email === "") {
+      message.innerHTML = "Email must be filled out";
+      return false;
+    }
+
+    if (password === "") {
+      message.innerHTML = "Password must be filled out";
+      return false;
+    }
+
+    
+    return true;
+  }
+</script>
+
 <%- include("partials/footer.ejs") -%>

@@ -1,3 +1,5 @@
+/* Footer start */
+
 .dark-footer {
     background-color: #333; 
     color: white; 
@@ -14,3 +16,20 @@ footer{
     margin-bottom: 20px;
 }
 
+/* Footer end */
+
+    /* about us page start */
+    .staff-card {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+  
+    .staff-photo {
+        border-radius: 50%;
+        width: 300px;
+        height: 300px;
+        object-fit: cover;
+        margin-bottom: 10px;
+    }
+   
+    /* about us page end */
