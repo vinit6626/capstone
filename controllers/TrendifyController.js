@@ -30,11 +30,13 @@ class TrendifyController {
         const { email, password } = req.body;
         const confirm_user_in_db = await userDataModel.findOne({ email: email })
         if (!confirm_user_in_db) {
+            console.log("hello");
             res.render("login.ejs", { msg: "😢 User Not Found, Please Enter Valid Email" });
         } else {
             const isMatch = await bcrypt.compare(password, confirm_user_in_db.password);
             if (isMatch) {
                 req.session.userEmail = confirm_user_in_db.email;
+                email: confirm_user_in_db.email;
                 console.log(req.session.userEmail)
                 res.redirect("/home");
 
@@ -44,7 +46,27 @@ class TrendifyController {
             }
         }
     }
+    static forgotpasswordController = async (req, res) => {
+                res.render("forgotpassword.ejs", { msg: "" });
+    }
 
+    static updatepasswordController = async (req, res) => {
+        console.log(req.body);
+            try {
+              const { email, password } = req.body;
+              const user = await userDataModel.findOne({ email });
+              if (!user) {
+                return res.render("forgotpassword.ejs", { msg: "User not found, please enter your valid email address" });
+              }
+              const hashPassword = await bcrypt.hash(password, 10);
+              await userDataModel.updateOne({ email }, { password: hashPassword });
+              console.log("*** Password updated successfully ***");
+              res.render("login.ejs", { msg: "Password updated successfully" });
+            } catch (error) {
+              console.error("Error updating password:", error);
+              res.render("forgotpassword.ejs", { msg: "Password update failed" });
+            }
+    }
 
     static homeController = async (req, res) => {
         res.render('home.ejs');
