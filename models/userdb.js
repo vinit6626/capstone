@@ -19,6 +19,7 @@ const userDataSchema = mongoose.Schema({
     password: {type: String},
     userType: {type: String, default: 'user'},
     date_of_create: {type: String, default: Date.now },
+    verificationCode: {type: String, default: 'default'}
 })
 
 // wrraped schema in model

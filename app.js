@@ -1,5 +1,6 @@
 const express = require('express');
 const route = require('./routes/web.js');   
+const nodemailer = require('nodemailer');
 
 const bodyParser = require('body-parser');
 const path = require('path');
