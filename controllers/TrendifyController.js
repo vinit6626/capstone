@@ -40,8 +40,12 @@ class TrendifyController {
             if (isMatch) {
                 req.session.userEmail = confirm_user_in_db.email;
                 email: confirm_user_in_db.email;
-                console.log(req.session.userEmail)
+                const type = confirm_user_in_db.userType;
+                req.session.email = email;
+                req.session.userType = type;
+                console.log(req.session.userEmail);
                 res.redirect("/home");
+                // res.render("home.ejs", {email, type});
 
             } else {
                 res.render("login.ejs", { msg: "Incorrect Password 😔, Please Enter Valid Password" });
@@ -49,6 +53,12 @@ class TrendifyController {
             }
         }
     }
+
+    static logoutController = (req, res) => {
+        req.session.destroy(console.log("session destroyed"));
+        res.redirect("/login");
+    }
+
     static forgotpasswordController = async (req, res) => {
         res.render("forgotpassword.ejs", { msg: "" });
     }
@@ -128,7 +138,13 @@ class TrendifyController {
     }
     
     static homeController = async (req, res) => {
-        res.render('home.ejs');
+        if(req.session.email && req.session.userType){
+            const email = req.session.email;
+            const type = req.session.userType;
+            res.render('home.ejs', {email, type});
+        }else{
+            res.redirect("/login");
+        }
     }
 
     static contactusController = async (req, res) => {
