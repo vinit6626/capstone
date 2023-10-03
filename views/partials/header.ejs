@@ -31,10 +31,10 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
-        <% if (typeof email !== 'undefined' && type === "user") { %>
         <li class="nav-item">
-          <a class="nav-link" href="#">Home</a>
+          <a class="nav-link" href="/home">Home</a>
         </li>
+        <% if (typeof email !== 'undefined' && type === "user") { %>
         <li class="nav-item">
           <a class="nav-link" href="#">Product</a>
         </li>
@@ -49,6 +49,14 @@
       </ul>
       <ul class="navbar-nav ml-auto">
         <% if (typeof email !== 'undefined' && type === "user") { %>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Hello, <%= email  %>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="/profile">Profile</a>
+            </div>
+          </li>
         <li class="nav-item">
           <a class="nav-link" href="logout">Logout</a>
         </li>

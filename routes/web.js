@@ -12,6 +12,9 @@ router.post('/updatepassword', TrendifyControllers.updatepasswordController);
 router.get('/passwordreset', TrendifyControllers.passwordresetController);
 router.post('/sendemail', TrendifyControllers.sendemailController);
 router.get('/logout', TrendifyControllers.logoutController);
+router.get('/profile', TrendifyControllers.profileController);
+router.post('/profileupdate', TrendifyControllers.profileUpdateController);
+
 
 router.get('/home', TrendifyControllers.homeController);
 router.get('/contactus', TrendifyControllers.contactusController);

@@ -54,16 +54,84 @@ class TrendifyController {
         }
     }
 
+    static profileController = async (req, res) => {
+        const email = req.session.email || ""; 
+        const type = req.session.userType || "";
+        let userData = {
+          email: '',
+          fname: '',
+          lname: '',
+          address: '',
+          zipcode: '',
+          contactno: ''
+        };
+      
+        if(req.session.email && req.session.userType){
+          try {
+            // Assuming you have a userDataModel that represents your MongoDB model
+            const user = await userDataModel.findOne({ email: email });
+      
+            // If a user with the provided email exists, use their data
+            if (user) {
+              userData = user.toObject();
+            }
+          } catch (error) {
+            console.error('Error retrieving user data:', error);
+          }
+        }
+      
+        res.render('profile.ejs', { msg: '', email, type, userData });
+      };
+      
+    
+      static profileUpdateController = async (req, res) => {
+        const email = req.session.email || ""; 
+        const type = req.session.userType || "";
+        const updatedUserDetails = req.body;
+      
+        if (req.session.email && req.session.userType) {
+          try {
+            const updateDocument = {
+              $set: updatedUserDetails 
+            };
+      
+            const result = await userDataModel.findOneAndUpdate({ email: email }, updateDocument, {
+              returnOriginal: false 
+            });
+      
+            if (result) {
+              console.log('User updated:', result);
+              res.render('profile.ejs', { msg: 'Your details updated successfully', email, type, userData: result });
+            } else {
+              console.log('User not found');
+              res.render('profile.ejs', { msg: 'User not found', email, type, userData: {} });
+            }
+          } catch (error) {
+            console.error('Error updating user:', error);
+            res.render('profile.ejs', { msg: 'Error updating user', email, type, userData: {} });
+          }
+        } else {
+          res.render("login.ejs", { msg: "Session Expired, Please login again" });
+        }
+      }
+      
+
+
     static logoutController = (req, res) => {
         req.session.destroy(console.log("session destroyed"));
         res.redirect("/login");
     }
 
     static forgotpasswordController = async (req, res) => {
-        res.render("forgotpassword.ejs", { msg: "" });
+        const email = req.session.email || ""; 
+        const type = req.session.userType || "";
+        res.render("forgotpassword.ejs", { msg: "", email, type}); 
     }
+    
     static passwordresetController = async (req, res) => {
-        res.render("passwordreset.ejs", {msg: ""});
+        const email = req.session.email || ""; 
+        const type = req.session.userType || "";
+        res.render("passwordreset.ejs", {msg: "", email, type});
     }
 
     
@@ -112,46 +180,46 @@ class TrendifyController {
     };
  
     static updatepasswordController = async (req, res) => {
-        console.log(req.body);
-        try {
-            const { email, verificationCode, password, c_password } = req.body;
-            const user = await userDataModel.findOne({ email });
-    
-            if (!user) {
-                return res.render("forgotpassword.ejs", { msg: "User not found, please enter your valid email address" });
+            try {
+                const { email, verificationCode, password, c_password } = req.body;
+                const user = await userDataModel.findOne({ email });
+        
+                if (!user) {
+                    return res.render("forgotpassword.ejs", { msg: "User not found, please enter your valid email address" });
+                }
+        
+                if (user.verificationCode !== verificationCode) {
+                    return res.render("forgotpassword.ejs", { msg: "Invalid verification code" });
+                }
+        
+                const hashPassword = await bcrypt.hash(password, 10);
+        
+                await userDataModel.updateOne({ email }, { password: hashPassword, verificationCode: 'default' });
+        
+                console.log("*** Password updated successfully ***");
+                res.render("login.ejs", { msg: "Password updated successfully" });
+            } catch (error) {
+                console.error("Error updating password:", error);
+                res.render("forgotpassword.ejs", { msg: "Password update failed" });
             }
-    
-            if (user.verificationCode !== verificationCode) {
-                return res.render("forgotpassword.ejs", { msg: "Invalid verification code" });
-            }
-    
-            const hashPassword = await bcrypt.hash(password, 10);
-    
-            await userDataModel.updateOne({ email }, { password: hashPassword, verificationCode: 'default' });
-    
-            console.log("*** Password updated successfully ***");
-            res.render("login.ejs", { msg: "Password updated successfully" });
-        } catch (error) {
-            console.error("Error updating password:", error);
-            res.render("forgotpassword.ejs", { msg: "Password update failed" });
-        }
+        
     }
     
     static homeController = async (req, res) => {
-        if(req.session.email && req.session.userType){
-            const email = req.session.email;
-            const type = req.session.userType;
+        const email = req.session.email || ""; 
+        const type = req.session.userType || "";
             res.render('home.ejs', {email, type});
-        }else{
-            res.redirect("/login");
-        }
     }
 
     static contactusController = async (req, res) => {
-        res.render('contactus.ejs');
+        const email = req.session.email || ""; 
+        const type = req.session.userType || "";
+        res.render('contactus.ejs', {email, type});
     }
     static aboutusController = async (req, res) => {
-        res.render('aboutus.ejs');
+        const email = req.session.email || ""; 
+        const type = req.session.userType || "";
+        res.render('aboutus.ejs', {email, type});
     }
 }
 
