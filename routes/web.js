@@ -22,3 +22,4 @@ router.get('/contactus', TrendifyControllers.contactusController);
 router.get('/aboutus', TrendifyControllers.aboutusController);
 
 module.exports = router
+
