@@ -16,6 +16,7 @@ router.get('/profile', TrendifyControllers.profileController);
 router.post('/profileupdate', TrendifyControllers.profileUpdateController);
 
 
+
 router.get('/home', TrendifyControllers.homeController);
 router.get('/contactus', TrendifyControllers.contactusController);
 router.get('/aboutus', TrendifyControllers.aboutusController);
