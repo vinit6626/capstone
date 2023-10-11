@@ -8,8 +8,6 @@ mongoose.connect("mongodb+srv://trendifycapstone:TrendifyCapstone@cluster0.8lsre
 
 
 const userDataSchema = mongoose.Schema({
-    fName: {type: String, default: 'default'},
-    lName:  {type: String, default: 'default'}, 
     email:  {type: String, unique:true},
     password: {type: String},
     fname: {type: String, default: 'default'},
