@@ -101,3 +101,13 @@ footer{
 
 
 
+
+    .checkbox-container {
+        display: flex;
+        flex-direction: row;
+        gap: 10px; /* Adjust the value as needed for the desired spacing */
+    }
+    
+    .checkboxrow{
+        margin-right: 20px;
+    }

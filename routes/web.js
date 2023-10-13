@@ -1,11 +1,26 @@
 const express = require('express');
 
 const router = express.Router();
+const multer = require('multer'); 
+const storage = multer.diskStorage ({
+    destination: function (req, file, cb) {
+        return cb(null, "./uploads");
+    },
+    filename: function (req, file, cb) {
+        return cb(null, `${Date.now()}-${file.originalname}`)
+    },
+});
+const upload = multer({ storage });
 
 const TrendifyControllers = require('../controllers/TrendifyController.js');
 const AdminControllers = require('../controllers/AdminController.js');
 const BrandControllers = require('../controllers/BrandController.js');
 const CategoryControllers = require('../controllers/CategoryController.js');
+const ProductControllers = require('../controllers/ProductController.js');
+
+
+
+
 
 //Guest and user login routes
 router.get('/login', TrendifyControllers.loginController);
@@ -34,7 +49,7 @@ router.post('/admin_verification', AdminControllers.adminVerificationController)
 
 
 //Brand Routes
-router.get("/brand", BrandControllers.brandController)
+router.get("/brand", BrandControllers.brandController);
 router.post('/addbrand', BrandControllers.addBrandController);
 router.get("/managebrand", BrandControllers.manageBrandController)
 router.get('/deletebrand/:id', BrandControllers.deleteBrandController);
@@ -51,6 +66,11 @@ router.get("/managecategory", CategoryControllers.manageCategoryController)
 router.get('/deletecategory/:id', CategoryControllers.deleteCategoryController);
 router.get('/editcategory/:id', CategoryControllers.editCategoryController);
 router.post('/updatecategory', CategoryControllers.updateCategoryController);
+
+//Product Routes
+
+router.get("/product", ProductControllers.productController);
+router.post('/addproduct', upload.single('productImage'), ProductControllers.addProductController);
 
 
 
