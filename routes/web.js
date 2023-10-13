@@ -5,8 +5,9 @@ const router = express.Router();
 const TrendifyControllers = require('../controllers/TrendifyController.js');
 const AdminControllers = require('../controllers/AdminController.js');
 const BrandControllers = require('../controllers/BrandController.js');
+const CategoryControllers = require('../controllers/CategoryController.js');
 
-//user side routes
+//Guest and user login routes
 router.get('/login', TrendifyControllers.loginController);
 router.post('/register_user', TrendifyControllers.registerUserController);
 router.post('/user_verification', TrendifyControllers.userVerificationController);
@@ -32,12 +33,22 @@ router.post('/adminupdatepassword', AdminControllers.adminUpdatePasswordControll
 router.post('/admin_verification', AdminControllers.adminVerificationController);
 
 
+//Brand Routes
 router.get("/brand", BrandControllers.brandController)
 router.post('/addbrand', BrandControllers.addBrandController);
 router.get("/managebrand", BrandControllers.manageBrandController)
 router.get('/deletebrand/:id', BrandControllers.deleteBrandController);
 router.get('/editbrand/:id', BrandControllers.editBrandController);
 router.post('/updatebrand', BrandControllers.updateBrandController);
+
+
+
+//Category Routes
+
+router.get("/category", CategoryControllers.categoryController)
+router.post('/addcategory', CategoryControllers.addCategoryController);
+router.get("/managecategory", CategoryControllers.manageCategoryController)
+
 
 
 module.exports = router
