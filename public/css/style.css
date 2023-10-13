@@ -80,3 +80,13 @@ footer{
         color: #DBCBB3;
     }
     /* Home end */
+
+    /* Add Brand start */
+    .brandform {
+        border: 1px solid #ccc; 
+        border-radius: 10px; 
+        padding: 20px; 
+    }
+    /* Add Brand end */
+
+

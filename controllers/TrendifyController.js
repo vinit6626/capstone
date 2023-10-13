@@ -176,7 +176,8 @@ const updatedUserName = req.session.fname === "default" ? req.session.email : re
     
         if (!confirm_user_in_db) {
             console.log("hello");
-            res.render("passwordreset.ejs", { msg: "😢 User Not Found, Please Enter Valid Email" });
+            const email = req.session.fname === "default" ? req.session.email : req.session.fname;
+            res.render("passwordreset.ejs", { msg: "😢 User Not Found, Please Enter Valid Email", email: email, type: req.session.userType });
         } else {
             const randomCode = generateRandomCode();
     
@@ -242,11 +243,6 @@ const updatedUserName = req.session.fname === "default" ? req.session.email : re
 
         const email = req.session.fname === "default" ? req.session.email : req.session.fname; 
         const type = req.session.userType || "";
-        console.log("After redirect")
-        console.log(req.session.userEmail);
-        console.log(req.session.email);
-        console.log(req.session.fname);
-console.log(type);
         res.render('home.ejs', {email, type});
     }
 

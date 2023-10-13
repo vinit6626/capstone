@@ -1,0 +1,71 @@
+<%- include("partials/header.ejs") -%>
+
+<% if (msg) { %>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <strong><%= msg %></strong>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  <% } %>
+  
+<div class="container mt-5" style="width:35%;">
+    <h2 class="text-center mb-5"><u>Add Brand</u></h2>
+    <form name="myForm" action="/addbrand" method="post" class="container userForm brandform" onsubmit="return validateForm()">
+        <div class="form-group">
+            <label for="brandName"><b>Brand Name</b></label>
+            <input type="text" class="form-control" id="brandName" placeholder="Enter brand name e.g Nike" name="brandName">
+            <span id="brandNameError" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label><b>Brand Visibility</b></label>
+            <div class="form-check">
+                <input type="radio" class="form-check-input" id="visibleField1" name="brandvisibility" value="visible" checked>
+                <label class="form-check-label" for="visibleField1">Visible</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" class="form-check-input" id="visibleField2" name="brandvisibility" value="hide">
+                <label class="form-check-label" for="visibleField2">Hide</label>
+            </div>
+            <span id="visibleFieldError" class="text-danger"></span>
+        </div>
+        
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+
+<%- include("partials/footer.ejs") -%>
+
+
+<script>
+    function validateForm() {
+        var brandName = document.getElementById("brandName").value;
+        var visibleField1 = document.getElementById("visibleField1").checked;
+        var visibleField2 = document.getElementById("visibleField2").checked;
+        
+        // Simple validation for brand name
+        if (brandName.trim() === "") {
+            document.getElementById("brandNameError").innerText = "Brand name is required";
+            return false;
+        } else {
+            document.getElementById("brandNameError").innerText = "";
+        }
+    
+        // Validation for radio buttons
+        if (!visibleField1 && !visibleField2) {
+            document.getElementById("visibleFieldError").innerText = "Please select a visibility option";
+            return false;
+        } else {
+            document.getElementById("visibleFieldError").innerText = "";
+        }
+    
+        // If all fields are valid, the form will be submitted
+        return true;
+    }
+    </script>
+
+   

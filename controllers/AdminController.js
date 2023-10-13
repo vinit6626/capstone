@@ -80,7 +80,7 @@ class AdminControllers {
             console.log(updatedUserDetails);
             console.log("--- Sorry data is not added to DB due to error Below -----");
             console.error(error);
-            res.render("adminlogin.ejs", { msg: 'Please, sign up with a different email111', email: updatedUserDetails, type:req.session.userType});
+            res.render("adminlogin.ejs", { msg: 'Please, sign up with a different email', email: updatedUserDetails, type:req.session.userType});
         }
     }
 

@@ -1,0 +1,71 @@
+<%- include("partials/header.ejs") -%>
+
+<!-- <div class="container mt-5"> -->
+
+    <h2 class="text-center my-5"><u>Manage Brands</u></h2>
+    <table class="table table-hover brandform" style="width:90%; margin:auto;">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Visibility</th>
+            <th scope="col">Created By</th>
+            <th scope="col">Created Date</th>
+            <th scope="col">Updated By</th>
+            <th scope="col">Updated Date</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+            <% if(brand_data.length >0) { %>
+                <% brand_data.forEach(function(brand, index) { %>
+                    <tr>
+                        <th scope="row"><%= index + 1 %></th>
+                        <td><%= brand.brand_name %></td>
+                    <td>
+                        <% if (brand.brand_visibility == "visible") { %>
+
+                        <div class="circle bg-success rounded-circle d-flex align-items-center justify-content-center" style="width:17px; height:17px; color:green;">
+                        </td>
+                    <% }else{%>
+                        <div class="circle bg-danger rounded-circle d-flex align-items-center justify-content-center" style="width:17px; height:17px; color:green;">
+                        </td> 
+
+                    <%}%>
+                    <td><%= brand.brand_addedBy %></td>
+                    <td><%= new Date(brand.brand_created_date).toString().substring(4, 15)
+                        %></td>
+
+                    <td>
+                        <% if (brand.brand_updatedBy === "default") { %>
+                            <i class="fas fa-minus"></i>
+
+                        <% } else { %>
+                            <%= brand.brand_updatedBy %>
+                        <% } %>
+                    </td>
+                    <td>
+                        <% if (brand.brand_updated_date === "default") { %>
+                            <i class="fas fa-minus"></i>
+
+                        <% } else { %>
+                            <%= new Date(brand.brand_updated_date).toString().substring(0, 15)
+                        %>
+                        <% } %>
+                    </td>
+                    <td>
+                        <a class="btn btn-primary" style="color:white;" href="/editbrand/<%= brand._id.toString() %>" >Edit</a>
+                        <a style="color:white;" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            <% }); %>
+            <% }else{ %>
+                <td colspan="8" class="text-center">
+                    No data available
+                </td>
+            <% } %>
+        </tbody>
+      </table>
+</div>
+
+<%- include("partials/footer.ejs") -%>

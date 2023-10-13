@@ -4,6 +4,7 @@ const router = express.Router();
 
 const TrendifyControllers = require('../controllers/TrendifyController.js');
 const AdminControllers = require('../controllers/AdminController.js');
+const BrandControllers = require('../controllers/BrandController.js');
 
 //user side routes
 router.get('/login', TrendifyControllers.loginController);
@@ -30,6 +31,10 @@ router.get('/createPassword', AdminControllers.createPasswordController);
 router.post('/adminupdatepassword', AdminControllers.adminUpdatePasswordController);
 router.post('/admin_verification', AdminControllers.adminVerificationController);
 
+
+router.get("/brand", BrandControllers.brandController)
+router.post('/addbrand', BrandControllers.addBrandController);
+router.get("/managebrand", BrandControllers.manageBrandController)
 
 
 module.exports = router
