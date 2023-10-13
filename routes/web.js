@@ -35,6 +35,9 @@ router.post('/admin_verification', AdminControllers.adminVerificationController)
 router.get("/brand", BrandControllers.brandController)
 router.post('/addbrand', BrandControllers.addBrandController);
 router.get("/managebrand", BrandControllers.manageBrandController)
+router.get('/deletebrand/:id', BrandControllers.deleteBrandController);
+router.get('/editbrand/:id', BrandControllers.editBrandController);
+router.post('/updatebrand', BrandControllers.updateBrandController);
 
 
 module.exports = router

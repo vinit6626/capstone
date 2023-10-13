@@ -1,0 +1,86 @@
+<%- include("partials/header.ejs") -%>
+
+<% if (msg) { %>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <strong><%= msg %></strong>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  <% } %>
+  <div class="container mt-4" style="width:35%;">
+    <h2 class="text-center mb-4"><u>Update Brand</u></h2>
+    <form name="myForm" action="/updatebrand" method="post" class="container userForm brandform" onsubmit="return validateForm()">
+        <div class="form-group">
+            <label for="brandName"><b>Brand Name</b></label>
+            <input type="text" class="form-control" id="brandName" placeholder="Enter brand name e.g Nike" name="brandName" value="<%= branddata.brand_name %>">
+            <input type="hidden" name = "brand_id" value='<%= branddata._id %>'
+            <span id="brandNameError" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label><b>Brand Visibility</b></label>
+            <div class="form-check">
+                <input type="radio" class="form-check-input" id="visibleField1" name="brandvisibility" value="visible" <%= branddata.brand_visibility === "visible" ? 'checked' : '' %>>
+                <label class="form-check-label" for="visibleField1">Visible</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" class="form-check-input" id="visibleField2" name="brandvisibility" value="hide" <%= branddata.brand_visibility === "hide" ? 'checked' : '' %>>
+                <label class="form-check-label" for="visibleField2">Hide</label>
+            </div>
+            <span id="visibleFieldError" class="text-danger"></span>
+        </div>
+        
+
+        <div class="form-group">
+            <label for="brandAddedBy"><b>Brand Added By</b></label>
+            <input type="text" class="form-control" id="brandAddedBy" name="brandAddedBy" value="<%= branddata.brand_addedBy %>" disabled>
+        </div>
+
+        <div class="form-group">
+            <label for="brandCreatedDate"><b>Brand Created Date</b></label>
+            <input type="text" class="form-control" id="brandCreatedDate" name="brandCreatedDate" value="<%= branddata.brand_created_date.toString().substring(0, 10) %>" disabled>
+        </div>
+
+        <% if(branddata.brand_updatedBy != "default"){ %>
+                <div class="form-group">
+                    <label for="brandAddedBy"><b>Brand Added By</b></label>
+                    <input type="text" class="form-control" id="brandAddedBy" name="brandAddedBy" value="<%= branddata.brand_updatedBy %>" disabled>
+                </div>
+        
+                <div class="form-group">
+                    <label for="brandCreatedDate"><b>Brand Created Date</b></label>
+                    <input type="text" class="form-control" id="brandCreatedDate" name="brandCreatedDate" value="<%= branddata.brand_updated_date.toString().substring(0, 10) %>" disabled>
+                </div>
+                <% } %>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+
+<%- include("partials/footer.ejs") -%>
+
+
+<script>
+    function validateForm() {
+        var brandName = document.getElementById("brandName").value;
+        var visibleField1 = document.getElementById("visibleField1").checked;
+        var visibleField2 = document.getElementById("visibleField2").checked;
+        
+        if (brandName.trim() === "") {
+            document.getElementById("brandNameError").innerText = "Brand name is required";
+            return false;
+        } else {
+            document.getElementById("brandNameError").innerText = "";
+        }
+    
+        if (!visibleField1 && !visibleField2) {
+            document.getElementById("visibleFieldError").innerText = "Please select a visibility option";
+            return false;
+        } else {
+            document.getElementById("visibleFieldError").innerText = "";
+        }
+        return true;
+    }
+    </script>
