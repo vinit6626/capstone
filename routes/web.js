@@ -48,6 +48,9 @@ router.post('/updatebrand', BrandControllers.updateBrandController);
 router.get("/category", CategoryControllers.categoryController)
 router.post('/addcategory', CategoryControllers.addCategoryController);
 router.get("/managecategory", CategoryControllers.manageCategoryController)
+router.get('/deletecategory/:id', CategoryControllers.deleteCategoryController);
+router.get('/editcategory/:id', CategoryControllers.editCategoryController);
+router.post('/updatecategory', CategoryControllers.updateCategoryController);
 
 
 
