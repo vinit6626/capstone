@@ -15,7 +15,7 @@ class ProductControllers {
         let sku;
 
         while (!isUnique) {
-            sku = Math.floor(Math.random() * 100000).toString();
+            sku = Math.floor(Math.random() * 10).toString();
             const existingProduct = await productDataModel.findOne({ product_sku: sku });
             if (!existingProduct) {
                 isUnique = true;
@@ -48,8 +48,13 @@ class ProductControllers {
         try {
             const currentDate = new Date();
             const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()} ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
-            const concatenatedSizes = req.body.product_size.join(', '); 
-            console.log(concatenatedSizes);
+            let joinedSizes;
+            if (Array.isArray(req.body.product_size)) {
+                joinedSizes = req.body.product_size.join(', ');
+            } 
+            console.log(joinedSizes);
+            console.log(req.body.product_gender);
+            console.log(req.body);
 
             const productData_inserted = await productDataModel.create({
                 product_title: req.body.productName,
@@ -57,7 +62,7 @@ class ProductControllers {
                 product_sku : req.body.product_sku,
                 product_quantity : req.body.productQuantity,
                 product_image_path : req.file.filename,
-                product_size : concatenatedSizes,
+                product_size : joinedSizes,
                 product_category_id : req.body.product_category,
                 product_brand_id : req.body.product_brand,
                 product_gender : req.body.gender,
@@ -68,77 +73,40 @@ class ProductControllers {
                 product_created_date : formattedDate,
                 product_updated_date : "default",
             });
-            res.redirect("/managecategory");
+            res.redirect("/manageproduct");
         } catch (error) {
             console.error(error);
-            res.render('category/category.ejs', { msg: 'An error occurred', email, type: req.session.userType });
+            res.redirect('/product');
         }
     }
 
     static manageProductController = async (req, res) => {
         const email = req.session.fname === "default" ? req.session.email : req.session.fname;
-        if (req.session.email && req.session.userType) {
           
             try{
+                const product_data = await productDataModel.find({});
+                const brand_data = await brandDataModel.find({});
                 const category_data = await categoryDataModel.find({});
-                res.render("category/managecategory.ejs", {msg:"", email, type: req.session.userType, category_data});
+                console.log(product_data);
+                console.log(brand_data);
+
+                res.render("product/manageproduct.ejs", {msg:"", email, type: req.session.userType, product_data, brand_data, category_data});
             }catch(err){
                 console.error(err);
                 res.redirect("/home");
             }
-        }else{
-        res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType});
-        }
     }
 
     static deleteProductController = async (req, res) => {
-        try {
-            const categoryId = req.params.id;
-            const categoryDeleteFromDB = await categoryDataModel.findByIdAndDelete(categoryId);
-            res.redirect("/managecategory");
-        } catch (error) {
-            console.log(error);
-            // Handle the error as needed
-            res.redirect("/managecategory");
-        }
+       
     }
 
     static editProductController = async (req, res) => {
-        try {
-            const categoryId = req.params.id;
-            const categorydata = await categoryDataModel.findById(categoryId);
-
-            const email = req.session.fname === "default" ? req.session.email : req.session.fname;
-            res.render("category/editcategory.ejs", { msg:"", email, type: req.session.userType, categorydata})
-            // res.redirect("/managecategory");
-        } catch (error) {
-            console.log(error);
-            res.redirect("/managecategory");
-        }
+        
     }
 
     static updateProductController = async (req, res) => {
-        const email = req.session.fname === "default" ? req.session.email : req.session.fname;
-    
-        console.log(req.body);
-        try {
-            const currentDate = new Date();
-            const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()} ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
-
-        const updateCategory = await categoryDataModel.findByIdAndUpdate(
-            req.body.category_id, 
-            {
-                category_name: req.body.categoryName,
-                category_visibility: req.body.categoryvisibility,
-                category_updated_date: formattedDate, 
-                category_updatedBy: req.session.email,
-            }
-        );
-            res.redirect("/managecategory");
-        } catch (error) {
-            console.log(error);
-            res.redirect("/managecategory");
-        }
+       
     }
 
 }

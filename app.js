@@ -18,7 +18,7 @@ app.use(session({
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.listen(2700, ()=>{
     console.log("Running at 2700");
 })

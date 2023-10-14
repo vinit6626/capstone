@@ -1,0 +1,95 @@
+<%- include("../partials/header.ejs") -%>
+
+<!-- <div class="container mt-5"> -->
+
+    <h2 class="text-center my-4"><u>Manage Product</u></h2>
+    <p class="text-center my-3"><a href="/product" >Add more Product</a></p>
+    <div class="table-container">
+    <table class="table table-hover categoryform" style="width:90%; margin:auto;">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">SKU</th>
+            <th scope="col">Category</th>
+            <th scope="col">Brand</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Size</th>
+            <th scope="col">Gender</th>
+            <th scope="col">Price</th>
+            <th scope="col">Image</th>
+
+            <th scope="col">Visibility</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+            <% if(product_data.length >0) { %>
+                <% product_data.forEach(function(product, index) { %>
+                    <tr>
+                        <th scope="row"><%= index + 1 %></th>
+                        <td><%= product.product_title.length > 30 ? product.product_title.slice(0, 30) + '...' : product.product_title %></td>
+
+                        <td><%= product.product_description.length > 30 ? product.product_description.slice(0, 30) + '...' : product.product_description %></td>
+
+                        <td><%= product.product_sku %></td>
+                        
+                        <td>
+                            <% category_data.forEach(function(category) { %>
+                                <% if (category._id.toString() === product.product_category_id) { %>
+                                    <%= category.category_name %>
+                                <% } %>
+                            <% }); %>
+                        </td>
+                       
+                        <td>
+                            <% brand_data.forEach(function(brand) { %>
+                                <% if (brand._id.toString() === product.product_brand_id) { %>
+                                    <%= brand.brand_name %>
+                                <% } %>
+                            <% }); %>
+                        </td>
+                       
+                        <td><%= product.product_quantity %></td>
+                        
+                        <td><%= product.product_size %></td>
+                        
+                        <% if (product.product_gender == "m") { %>
+
+                        <td>Male</td>
+                    <% }else if(product.product_gender == "f") {%>
+                        <td>Female</td>
+                    <% }%>
+                        <td>$<%= product.product_price %></td>
+                        
+                        <td><img src="./uploads/<%= product.product_image_path %>" width="100px" ></td>
+                   
+                        <td>
+                        <% if (product.product_visibility == "visible") { %>
+
+                        <div class="circle bg-success rounded-circle d-flex align-items-center justify-content-center" style="width:17px; height:17px; color:green;">
+                        </td>
+                    <% }else{%>
+                        <div class="circle bg-danger rounded-circle d-flex align-items-center justify-content-center" style="width:17px; height:17px; color:green;">
+                        </td> 
+
+                    <%}%>
+                    
+                    <td style="display: flex;" >
+                        <a class="btn btn-primary mx-2" style="color:white;" href="/editproduct/<%= product._id.toString() %>" ><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a style="color:white;" class="btn btn-danger mx-2" href="/deleteproduct/<%= product._id.toString() %>"><i class="fa-solid fa-trash-can"></i></a>
+                    </td>
+                </tr>
+            <% }); %>
+            <% }else{ %>
+                <td colspan="8" class="text-center">
+                    No data available
+                </td>
+            <% } %>
+        </tbody>
+      </table>
+    </div>
+</div>
+<%- include("../partials/footer.ejs") -%>
+
