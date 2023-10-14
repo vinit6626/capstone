@@ -56,7 +56,9 @@
                     </td>
                     <td>
                         <a class="btn btn-primary" style="color:white;" href="/editcategory/<%= category._id.toString() %>" ><i class="fa-solid fa-pen-to-square"></i></a>
+                        <% if(category.productCount == 0){%>
                         <a style="color:white;" class="btn btn-danger" href="/deletecategory/<%= category._id.toString() %>"><i class="fa-solid fa-trash-can"></i></a>
+                        <% }%>
                     </td>
                 </tr>
             <% }); %>

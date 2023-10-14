@@ -12,7 +12,9 @@ const brandDataSchema = mongoose.Schema({
     brand_addedBy: {type: String, default: 'default'},
     brand_updatedBy: {type: String, default: 'default'},
     brand_created_date: {type: String, default: 'default'},
-    brand_updated_date: {type: String, default: 'default'}
+    brand_updated_date: {type: String, default: 'default'},
+    productCount: {type: Number, default: 0},
+
 })
 
 const brandDataModel = mongoose.model("brand", brandDataSchema);

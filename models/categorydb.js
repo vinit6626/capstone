@@ -12,7 +12,8 @@ const categoryDataSchema = mongoose.Schema({
     category_addedBy: {type: String, default: 'default'},
     category_updatedBy: {type: String, default: 'default'},
     category_created_date: {type: String, default: 'default'},
-    category_updated_date: {type: String, default: 'default'}
+    category_updated_date: {type: String, default: 'default'},
+    productCount: {type: Number, default: 0},
 })
 
 const categoryDataModel = mongoose.model("category", categoryDataSchema);

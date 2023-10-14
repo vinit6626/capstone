@@ -9,13 +9,12 @@ class ProductControllers {
     static productController = async (req, res) => {
         const email = req.session.fname === "default" ? req.session.email : req.session.fname;
 
-    // Function to generate a random unique SKU
     const generateUniqueSKU = async () => {
         let isUnique = false;
         let sku;
 
         while (!isUnique) {
-            sku = Math.floor(Math.random() * 10).toString();
+            sku = Math.floor(Math.random() * 100000).toString();
             const existingProduct = await productDataModel.findOne({ product_sku: sku });
             if (!existingProduct) {
                 isUnique = true;
@@ -24,7 +23,6 @@ class ProductControllers {
         return sku;
     };
 
-    // Generate a unique SKU for the new product
     const uniqueSKU = await generateUniqueSKU();
 
 
@@ -73,6 +71,36 @@ class ProductControllers {
                 product_created_date : formattedDate,
                 product_updated_date : "default",
             });
+
+
+            try {
+                const updatedCategory = await categoryDataModel.findByIdAndUpdate(
+                  req.body.product_category,
+                  { $inc: { productCount: 1 } },
+                  { new: true } // To get the updated document
+                );
+                    
+                if (!updatedCategory) {
+                  console.error('Category not found or not updated.');
+                } else {
+                  console.log('Category updated successfully:', updatedCategory);
+                }
+                const updatedBrand = await brandDataModel.findByIdAndUpdate(
+                    req.body.product_brand,
+                    { $inc: { productCount: 1 } },
+                    { new: true } // To get the updated document
+                  );
+                      
+                  if (!updatedBrand) {
+                    console.error('Brand not found or not updated.');
+                  } else {
+                    console.log('Brand updated successfully:', updatedBrand);
+                  }
+
+              } catch (err) {
+                console.error('Error updating category:', err);
+              }
+              
             res.redirect("/manageproduct");
         } catch (error) {
             console.error(error);
@@ -87,18 +115,61 @@ class ProductControllers {
                 const product_data = await productDataModel.find({});
                 const brand_data = await brandDataModel.find({});
                 const category_data = await categoryDataModel.find({});
-                console.log(product_data);
-                console.log(brand_data);
-
                 res.render("product/manageproduct.ejs", {msg:"", email, type: req.session.userType, product_data, brand_data, category_data});
             }catch(err){
-                console.error(err);
                 res.redirect("/home");
             }
     }
 
     static deleteProductController = async (req, res) => {
-       
+        try {
+            const productId = req.params.id;
+            const product_data = await productDataModel.findById(productId);
+             console.log(product_data);
+             console.log(product_data.product_category_id);
+            const categoryID = product_data.product_category_id;
+            const brandID = product_data.product_brand_id;
+            console.log(categoryID);
+            try {
+                const updatedCategory = await categoryDataModel.findByIdAndUpdate(
+                    categoryID,
+                    { $inc: { productCount: -1 } }, // Decrement by 1
+                    { new: true } // To get the updated document
+                  );
+              
+                if (!updatedCategory) {
+                  console.error('Category not found or not updated.');
+                } else {
+                  console.log('Category updated successfully:', updatedCategory);
+                }
+
+                const updatedBrand = await brandDataModel.findByIdAndUpdate(
+                    brandID,
+                    { $inc: { productCount: -1 } }, // Decrement by 1
+                    { new: true } // To get the updated document
+                  );
+              
+                if (!updatedBrand) {
+                  console.error('Category not found or not updated.');
+                } else {
+                  console.log('Category updated successfully:', updatedBrand);
+                }
+              } catch (err) {
+                console.error('Error updating category:', err);
+              }
+
+            const productDeleteFromDB = await productDataModel.findByIdAndDelete(productId);
+            if (!productDeleteFromDB) {
+                console.log(`Brand with ID ${productId} not found.`);
+            } else {
+                console.log(productDeleteFromDB);
+            }
+    
+            res.redirect("/manageproduct");
+        } catch (error) {
+            console.log(error);
+            res.redirect("/manageproduct");
+        }
     }
 
     static editProductController = async (req, res) => {

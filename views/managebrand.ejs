@@ -56,7 +56,11 @@
                     </td>
                     <td>
                         <a class="btn btn-primary" style="color:white;" href="/editbrand/<%= brand._id.toString() %>" ><i class="fa-solid fa-pen-to-square"></i></a>
+                        <% if(brand.productCount == 0){%>
+
                         <a style="color:white;" class="btn btn-danger" href="/deletebrand/<%= brand._id.toString() %>"><i class="fa-solid fa-trash-can"></i></a>
+                        <% }%>
+
                     </td>
                 </tr>
             <% }); %>
