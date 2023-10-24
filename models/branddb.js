@@ -1,10 +1,14 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 
 mongoose.set('strictQuery', false);
-mongoose.connect("mongodb+srv://trendifycapstone:TrendifyCapstone@cluster0.8lsreoq.mongodb.net/Trendify?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true}).then(() => console.log('DB Connection Successfull'))
-.catch((err) => {
-    console.error(err);
-});
+
+const dbPassword = process.env.DATABASE_PASSWORD; // Retrieve the password from environment variables
+
+// mongoose.connect("mongodb+srv://trendifycapstone:${dbPassword}@cluster0.8lsreoq.mongodb.net/Trendify?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true}).then(() => console.log('DB Connection Successfull'))
+// .catch((err) => {
+//     console.error(err);
+// });
 
 const brandDataSchema = mongoose.Schema({
     brand_name:  {type: String, unique: true},

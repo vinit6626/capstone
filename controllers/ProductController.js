@@ -3,6 +3,9 @@ const brandDataModel = require('../models/branddb.js');
 const categoryDataModel = require('../models/categorydb.js');
 const bodyParser = require('body-parser');
 
+// Import the 'fs' module
+const fs = require('fs');
+const path = require('path');
 
 class ProductControllers {
     
@@ -33,7 +36,7 @@ class ProductControllers {
     
 
     const category = await categoryDataModel.find({});
-    const visibleCategoryCount = await categoryDataModel.countDocuments({ category_visibility: 'visible' })
+    const visibleCategoryCount = await categoryDataModel.countDocuments({ category_visibility: 'visible' });
 
 
     res.render('product/product.ejs', { msg: "", email, type: req.session.userType, sku: uniqueSKU, brand, visibleBrandCount,  category, visibleCategoryCount });
@@ -52,6 +55,7 @@ class ProductControllers {
             } 
             console.log(joinedSizes);
             console.log(req.body.product_gender);
+            console.log("brand type: " + req.body.productType)
             console.log(req.body);
 
             const productData_inserted = await productDataModel.create({
@@ -60,6 +64,7 @@ class ProductControllers {
                 product_sku : req.body.product_sku,
                 product_quantity : req.body.productQuantity,
                 product_image_path : req.file.filename,
+                product_type : req.body.productType,
                 product_size : joinedSizes,
                 product_category_id : req.body.product_category,
                 product_brand_id : req.body.product_brand,
@@ -77,7 +82,7 @@ class ProductControllers {
                 const updatedCategory = await categoryDataModel.findByIdAndUpdate(
                   req.body.product_category,
                   { $inc: { productCount: 1 } },
-                  { new: true } // To get the updated document
+                  { new: true } 
                 );
                     
                 if (!updatedCategory) {
@@ -88,7 +93,7 @@ class ProductControllers {
                 const updatedBrand = await brandDataModel.findByIdAndUpdate(
                     req.body.product_brand,
                     { $inc: { productCount: 1 } },
-                    { new: true } // To get the updated document
+                    { new: true } 
                   );
                       
                   if (!updatedBrand) {
@@ -127,14 +132,22 @@ class ProductControllers {
             const product_data = await productDataModel.findById(productId);
              console.log(product_data);
              console.log(product_data.product_category_id);
-            const categoryID = product_data.product_category_id;
-            const brandID = product_data.product_brand_id;
-            console.log(categoryID);
+             const categoryID = product_data.product_category_id;
+             const brandID = product_data.product_brand_id;
+             console.log(categoryID);
+             
+             
+             const image_name = product_data.product_image_path;
+            const uploadFolderPath = './upload/';
+            const imagePath = path.join(uploadFolderPath, image_name);
+
+            console.log(imagePath);
+            
             try {
                 const updatedCategory = await categoryDataModel.findByIdAndUpdate(
                     categoryID,
-                    { $inc: { productCount: -1 } }, // Decrement by 1
-                    { new: true } // To get the updated document
+                    { $inc: { productCount: -1 } }, 
+                    { new: true } 
                   );
               
                 if (!updatedCategory) {
@@ -145,8 +158,8 @@ class ProductControllers {
 
                 const updatedBrand = await brandDataModel.findByIdAndUpdate(
                     brandID,
-                    { $inc: { productCount: -1 } }, // Decrement by 1
-                    { new: true } // To get the updated document
+                    { $inc: { productCount: -1 } }, 
+                    { new: true } 
                   );
               
                 if (!updatedBrand) {
@@ -162,7 +175,9 @@ class ProductControllers {
             if (!productDeleteFromDB) {
                 console.log(`Brand with ID ${productId} not found.`);
             } else {
-                console.log(productDeleteFromDB);
+              console.log(productDeleteFromDB);
+              fs.unlinkSync(`./uploads/${image_name}`);
+              console.log(`Image ${image_name} deleted.`);
             }
     
             res.redirect("/manageproduct");
@@ -173,11 +188,131 @@ class ProductControllers {
     }
 
     static editProductController = async (req, res) => {
-        
+        try {
+          const productId = req.params.id;
+          const productdata = await productDataModel.findById(productId);
+          console.log(productdata);
+          const email = req.session.fname === "default" ? req.session.email : req.session.fname;
+
+    const brand = await brandDataModel.find({});
+    const visibleBrandCount = await brandDataModel.countDocuments({ brand_visibility: 'visible' });
+
+    const category = await categoryDataModel.find({});
+    const visibleCategoryCount = await categoryDataModel.countDocuments({ category_visibility: 'visible' });
+
+          res.render("product/editproduct.ejs", { msg:"", email, type: req.session.userType, productdata, brand, visibleBrandCount, category, visibleCategoryCount});
+          // res.redirect("/managecategory");
+      } catch (error) {
+          console.log(error);
+          res.redirect("/manageproduct");
+      }
     }
 
     static updateProductController = async (req, res) => {
-       
+       const productId = req.body.productId;
+       console.log("id " + productId);
+      console.log(req.body);
+       //   res.send(req.body.productId);
+       let file_name = "";
+       if (req.file && req.file.filename) {
+        // req.file.filename exists and has a value
+        file_name = req.file.filename;
+        const image_name = req.body.old_image;
+        
+          fs.unlinkSync(`./uploads/${image_name}`);
+          console.log(`Image ${image_name} deleted.`);
+        console.log('File uploaded with filename:', req.file.filename);
+      } else {
+        file_name = req.body.old_image;
+        console.log('No file uploaded or filename is empty.');
+      }
+      
+      console.log(file_name);
+      try {
+
+        const oldCategoryUpdate = await categoryDataModel.findByIdAndUpdate(
+                  req.body.old_category,
+                  { $inc: { productCount: -1 } }, 
+                  { new: true } 
+                );
+            
+              if (!oldCategoryUpdate) {
+                console.error('Category not found or not updated.');
+              } else {
+                console.log('Category updated successfully:', oldCategoryUpdate);
+              }
+      
+              const oldBrandUpdate = await brandDataModel.findByIdAndUpdate(
+                  req.body.old_brand,
+                  { $inc: { productCount: -1 } }, 
+                  { new: true } 
+                );
+            
+              if (!oldBrandUpdate) {
+                console.error('Category not found or not updated.');
+              } else {
+                console.log('Category updated successfully:', oldBrandUpdate);
+              }
+      
+                  const updatedCategory = await categoryDataModel.findByIdAndUpdate(
+                    req.body.product_category,
+                    { $inc: { productCount: 1 } },
+                    { new: true } 
+                  );
+                      
+                  if (!updatedCategory) {
+                    console.error('Category not found or not updated.');
+                  } else {
+                    console.log('Category updated successfully:', updatedCategory);
+                  }
+                  const updatedBrand = await brandDataModel.findByIdAndUpdate(
+                      req.body.product_brand,
+                      { $inc: { productCount: 1 } },
+                      { new: true } 
+                    );
+                        
+                    if (!updatedBrand) {
+                      console.error('Brand not found or not updated.');
+                    } else {
+                      console.log('Brand updated successfully:', updatedBrand);
+                    }
+      
+
+
+        const currentDate = new Date();
+        const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()} ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
+        let joinedSizes;
+        if (Array.isArray(req.body.product_size)) {
+            joinedSizes = req.body.product_size.join(', ');
+        } 
+        console.log(joinedSizes);
+        console.log("brand type: " + req.body.productType)
+        console.log(req.body);
+console.log("file name: " + file_name);
+        const productData_inserted = await productDataModel.findByIdAndUpdate(req.body.productId, {
+            product_title: req.body.productName,
+            product_description : req.body.productDescription,
+            product_type : req.body.productType,
+            product_size : joinedSizes,
+            product_brand_id : req.body.product_brand,
+            product_category_id : req.body.product_category,
+            product_quantity : req.body.productQuantity,
+            product_price : req.body.productPrice,
+            product_gender : req.body.gender,
+            product_visibility : req.body.productvisibility,
+            product_image_path : file_name,
+            product_updatedBy : "default",
+            product_updated_date : formattedDate,
+        });
+
+        if (!productData_inserted) {
+          return res.status(500).send("Failed to update product data");
+      }
+        res.redirect("/manageproduct");
+    } catch (error) {
+        console.error(error);
+        res.redirect('/product');
+    }
     }
 
 }

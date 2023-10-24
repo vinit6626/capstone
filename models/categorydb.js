@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
 mongoose.set('strictQuery', false);
-mongoose.connect("mongodb+srv://trendifycapstone:TrendifyCapstone@cluster0.8lsreoq.mongodb.net/Trendify?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true}).then(() => console.log('DB Connection Successfull'))
-.catch((err) => {
-    console.error(err);
-});
+// mongoose.connect("mongodb+srv://trendifycapstone:TrendifyCapstone@cluster0.8lsreoq.mongodb.net/Trendify?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true}).then(() => console.log('DB Connection Successfull'))
+// .catch((err) => {
+//     console.error(err);
+// });
 
 const categoryDataSchema = mongoose.Schema({
     category_name:  {type: String, unique: true},

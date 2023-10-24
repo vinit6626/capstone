@@ -73,9 +73,8 @@ router.get("/product", ProductControllers.productController);
 router.post('/addproduct', upload.single('productImage'), ProductControllers.addProductController);
 router.get("/manageproduct", ProductControllers.manageProductController)
 router.get('/deleteproduct/:id', ProductControllers.deleteProductController);
-// router.get('/editproduct/:id', ProductControllers.editProductController);
-// router.post('/updateproduct', ProductControllers.updateProductController);
-
+router.get('/editproduct/:id', ProductControllers.editProductController);
+router.post('/updateproduct', upload.single('productImage'), ProductControllers.updateProductController);
 
 
 

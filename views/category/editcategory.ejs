@@ -14,18 +14,18 @@
         <div class="form-group">
             <label for="categoryName"><b>Category Name</b></label>
             <input type="text" class="form-control" id="categoryName" placeholder="Enter Category name e.g Nike" name="categoryName" value="<%= categorydata.category_name %>">
-            <input type="hidden" name = "category_id" value='<%= categorydata._id %>'
+            <input type="hidden" name = "category_id" value='<%= categorydata._id %>'>
             <span id="categoryNameError" class="text-danger"></span>
         </div>
 
         <div class="form-group">
             <label><b>Category Visibility</b></label>
             <div class="form-check">
-                <input type="radio" class="form-check-input" id="visibleField1" name="categoryvisibility" value="visible" <%= categorydata.category_visibility === "visible" ? 'checked' : '' %>>
+                <input type="radio" class="form-check-input" id="visibleField1" name="categoryvisibility" value="visible" <%= categorydata.category_visibility === "visible" ? 'checked' : '' %>
                 <label class="form-check-label" for="visibleField1">Visible</label>
             </div>
             <div class="form-check">
-                <input type="radio" class="form-check-input" id="visibleField2" name="categoryvisibility" value="hide" <%= categorydata.category_visibility === "hide" ? 'checked' : '' %>>
+                <input type="radio" class="form-check-input" id="visibleField2" name="categoryvisibility" value="hide" <%= categorydata.category_visibility === "hide" ? 'checked' : '' %>
                 <label class="form-check-label" for="visibleField2">Hide</label>
             </div>
             <span id="visibleFieldError" class="text-danger"></span>

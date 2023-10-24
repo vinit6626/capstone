@@ -1,0 +1,8 @@
+# Ignore specific folders
+/node_modules
+/uploads
+/images
+
+# Ignore environment-specific files
+.env
+.env.*
