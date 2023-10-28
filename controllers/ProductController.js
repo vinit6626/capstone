@@ -10,6 +10,8 @@ const path = require('path');
 class ProductControllers {
     
     static productController = async (req, res) => {
+      if (req.session.email && req.session.userType) {
+
         const email = req.session.fname === "default" ? req.session.email : req.session.fname;
 
     const generateUniqueSKU = async () => {
@@ -41,8 +43,10 @@ class ProductControllers {
 
     res.render('product/product.ejs', { msg: "", email, type: req.session.userType, sku: uniqueSKU, brand, visibleBrandCount,  category, visibleCategoryCount });
 
+    }else{
+      res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType});
     }
-    
+  }
 
     static addProductController = async (req, res) => {
         const email = req.session.fname === "default" ? req.session.email : req.session.fname;
@@ -115,6 +119,7 @@ class ProductControllers {
 
     static manageProductController = async (req, res) => {
         const email = req.session.fname === "default" ? req.session.email : req.session.fname;
+        if (req.session.email && req.session.userType) {
           
             try{
                 const product_data = await productDataModel.find({});
@@ -124,6 +129,9 @@ class ProductControllers {
             }catch(err){
                 res.redirect("/home");
             }
+          }else{
+            res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType});
+          }
     }
 
     static deleteProductController = async (req, res) => {
@@ -301,7 +309,7 @@ console.log("file name: " + file_name);
             product_gender : req.body.gender,
             product_visibility : req.body.productvisibility,
             product_image_path : file_name,
-            product_updatedBy : "default",
+            product_updatedBy : req.session.email,
             product_updated_date : formattedDate,
         });
 

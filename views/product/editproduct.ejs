@@ -213,7 +213,27 @@
             <span id="productImageError" class="text-danger"></span>
         </div>
  
+        <div class="form-group">
+            <label for="productAddedBy"><b>Product Added By</b></label>
+            <input type="text" class="form-control" id="productAddedBy" name="productAddedBy" value="<%= productdata.product_addedBy %>" disabled>
+        </div>
 
+        <div class="form-group">
+            <label for="categoryCreatedDate"><b>Product Created Date</b></label>
+            <input type="text" class="form-control" id="productCreatedDate" name="productCreatedDate" value="<%= productdata.product_created_date.toString().substring(0, 10) %>" disabled>
+        </div>
+
+        <% if(productdata.product_updated_date != "default"){ %>
+                <div class="form-group">
+                    <label for="productUpdatedBy"><b>Product Updated By</b></label>
+                    <input type="text" class="form-control" id="productUpdatedBy" name="productUpdatedBy" value="<%= productdata.product_updatedBy %>" disabled>
+                </div>
+        
+                <div class="form-group">
+                    <label for="ProductUpdatedDate"><b>Category Updated Date</b></label>
+                    <input type="text" class="form-control" id="ProductUpdatedDate" name="ProductUpdatedDate" value="<%= productdata.product_updated_date.toString().substring(0, 10) %>" disabled>
+                </div>
+                <% } %>
 
         <div class="text-center">
             <button type="submit" class="btn btn-primary">Submit</button>

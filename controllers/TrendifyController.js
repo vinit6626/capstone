@@ -36,12 +36,15 @@ class TrendifyController {
         const confirm_user_in_db = await userDataModel.findOne({ email: email })
         console.log("vinit");
         console.log(confirm_user_in_db);
+        const status = confirm_user_in_db.status;
         if (!confirm_user_in_db) {
             console.log("hello");
             res.render("login.ejs", { msg: "😢 User Not Found, Please Enter Valid Email" });
         } else {
             const isMatch = await bcrypt.compare(password, confirm_user_in_db.password);
             if (isMatch) {
+                if(status === "active"){
+                    console.log("active");
                 req.session.userEmail = confirm_user_in_db.email;
                 email: confirm_user_in_db.email;
                 const type = confirm_user_in_db.userType;
@@ -51,10 +54,16 @@ class TrendifyController {
                 console.log(req.session.userEmail);
 
                 res.redirect("/home");
-                // res.render("home.ejs", {email, type});
+                }else{
+                    console.log("deactive");
+                    const updatedUserName = req.session.fname === "default" ? req.session.email : req.session.fname; 
 
+                res.render("login.ejs", { msg: "Your account is deactivated by Admin. To active your account please contact to the Admin.", email: updatedUserName, type: req.session.userType });
+
+                }
             } else {
-        const updatedUserName = req.session.fname === "default" ? req.session.email : req.session.fname; 
+        
+                const updatedUserName = req.session.fname === "default" ? req.session.email : req.session.fname; 
 
                 res.render("login.ejs", { msg: "Incorrect Password 😔, Please Enter Valid Password", email: updatedUserName, type: req.session.userType });
 
@@ -76,10 +85,8 @@ class TrendifyController {
       
         if(req.session.email && req.session.userType){
           try {
-            // Assuming you have a userDataModel that represents your MongoDB model
             const user = await userDataModel.findOne({ email: email });
       
-            // If a user with the provided email exists, use their data
             if (user) {
               userData = user.toObject();
             }
@@ -112,9 +119,9 @@ class TrendifyController {
 
             req.session.fname = userdetails.fname;
             
-console.log("before update");
-console.log(email);
-const updatedUserName = req.session.fname === "default" ? req.session.email : req.session.fname;
+            console.log("before update");
+            console.log(email);
+            const updatedUserName = req.session.fname === "default" ? req.session.email : req.session.fname;
             if (result) {
               console.log('User updated:', result);
               res.render('profile.ejs', { msg: 'Your details updated successfully', email: updatedUserName, type, userData: result });

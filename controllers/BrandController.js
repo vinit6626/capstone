@@ -68,7 +68,6 @@ class BrandControllers {
             res.redirect("/managebrand");
         } catch (error) {
             console.log(error);
-            // Handle the error as needed
             res.redirect("/managebrand");
         }
     }
@@ -80,7 +79,6 @@ class BrandControllers {
 
             const email = req.session.fname === "default" ? req.session.email : req.session.fname;
             res.render("editbrand.ejs", { msg:"", email, type: req.session.userType, branddata})
-            // res.redirect("/managebrand");
         } catch (error) {
             console.log(error);
             res.redirect("/managebrand");
@@ -110,7 +108,6 @@ class BrandControllers {
             res.redirect("/managebrand");
         }
     }
-
 }
 
 module.exports = BrandControllers

@@ -17,8 +17,8 @@ const userDataSchema = mongoose.Schema({
     contactno: {type: String, default: 'default'},
     userType: {type: String, default: 'user'},
     date_of_create: {type: String, default: Date.now },
-    verificationCode: {type: String, default: 'default'}
-
+    verificationCode: {type: String, default: 'default'},
+    status: {type: String, default: 'active'}
 })
 
 const userDataModel = mongoose.model("userData", userDataSchema);
