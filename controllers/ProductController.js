@@ -10,9 +10,9 @@ const path = require('path');
 class ProductControllers {
     
     static productController = async (req, res) => {
+      const email = req.session.fname === "default" ? req.session.email : req.session.fname;
       if (req.session.email && req.session.userType) {
 
-        const email = req.session.fname === "default" ? req.session.email : req.session.fname;
 
     const generateUniqueSKU = async () => {
         let isUnique = false;
@@ -321,7 +321,57 @@ console.log("file name: " + file_name);
         console.error(error);
         res.redirect('/product');
     }
+  }
+
+  static searchProductController = async (req, res) => {
+    const email = req.session.fname === "default" ? req.session.email : req.session.fname;
+
+    console.log(req.body);
+    function buildMongoQuery(queryObject) {
+      const filters = [];
+  
+      if (queryObject.productName) {
+        filters.push({ product_title: queryObject.productName });
+      }
+  
+      if (queryObject.sku) {
+        filters.push({ product_sku: queryObject.sku });
+      }
+  
+      if (queryObject.product_brand && queryObject.product_brand !== 'Select Brand') {
+        filters.push({ product_brand_id: queryObject.product_brand });
+      }
+  
+      if (queryObject.product_category && queryObject.product_category !== 'Select Category') {
+        filters.push({ product_category_id: queryObject.product_category });
+      }
+  
+      if (queryObject.gender) {
+        filters.push({ product_gender: queryObject.gender });
+      }
+  
+      if (queryObject.visibility) {
+        filters.push({ product_visibility: queryObject.visibility });
+      }
+  
+      const query = { $and: filters };
+  
+      return query; // Return the query object, not a JSON string
     }
+  
+    console.log("query");
+    const mongoQueryObject = buildMongoQuery(req.body);
+    console.log(mongoQueryObject);
+    
+    const product_data = await productDataModel.find(mongoQueryObject);
+    console.log(product_data);
+    console.log("product Fetched");
+
+    const brand_data = await brandDataModel.find({});
+    const category_data = await categoryDataModel.find({});
+    res.render("product/manageproduct.ejs", {msg:"", email, type: req.session.userType, product_data, brand_data, category_data});
+  }
+  
 
 }
 module.exports = ProductControllers

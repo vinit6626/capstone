@@ -18,6 +18,7 @@ const BrandControllers = require('../controllers/BrandController.js');
 const CategoryControllers = require('../controllers/CategoryController.js');
 const ProductControllers = require('../controllers/ProductController.js');
 const UserControllers = require('../controllers/UserController.js');
+const UserProductControllers = require('../controllers/UserProductController.js');
 
 
 
@@ -75,6 +76,7 @@ router.get("/manageproduct", ProductControllers.manageProductController);
 router.get('/deleteproduct/:id', ProductControllers.deleteProductController);
 router.get('/editproduct/:id', ProductControllers.editProductController);
 router.post('/updateproduct', upload.single('productImage'), ProductControllers.updateProductController);
+router.post('/searchProduct', ProductControllers.searchProductController);
 
 
 //Manage User
@@ -83,6 +85,12 @@ router.get("/blockuser/:id", UserControllers.blockUserController);
 router.get("/active/:id", UserControllers.activeUserController);
 router.get("/edituser/:id", UserControllers.editUserController);
 router.post('/updateuserinfo', UserControllers.updateUserInfoController);
+
+// Products for user
+router.get('/userproducts', UserProductControllers.userProductController);
+router.get("/viewproduct/:id", UserProductControllers.viewProductController);
+router.get("/productdetails", UserProductControllers.productDetailsController);
+
 
 
 module.exports = router

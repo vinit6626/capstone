@@ -15,7 +15,8 @@
         <div class="card">
           <div class="card-body">
             <form name="myForm" action="/updateuserinfo" method="post" class="container userForm" onsubmit="return validateForm()">
-                <h3 class="card-title center mb-4 text-center"><b>Profile</b></h3>
+              <a href="/manageuser" ><i class="fa-solid fa-arrow-left"></i></a>
+              <h3 class="card-title center mb-4 text-center"><b>User Profile</b></h3>
                 <div class="form-group">
                   <label for="exampleInputEmail1">Email</label>
                   <input type="email" class="form-control padding04" id="exampleInputEmail1" aria-describedby="emailHelp" name="email" placeholder="Enter email" value="<%= userData.email === 'default' ? '' : userData.email %>" disabled>

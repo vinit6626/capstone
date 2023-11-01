@@ -23,7 +23,7 @@ const productDataSchema = mongoose.Schema({
     product_updatedBy: {type: String, default: 'default'},
     product_created_date: {type: String, default: 'default'},
     product_updated_date: {type: String, default: 'default'}
-})
+});
 
 const productDataModel = mongoose.model("product", productDataSchema);
 
