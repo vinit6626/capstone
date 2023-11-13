@@ -19,7 +19,7 @@ const CategoryControllers = require('../controllers/CategoryController.js');
 const ProductControllers = require('../controllers/ProductController.js');
 const UserControllers = require('../controllers/UserController.js');
 const UserProductControllers = require('../controllers/UserProductController.js');
-
+const cartControllers = require('../controllers/CartController.js');
 
 
 
@@ -89,7 +89,13 @@ router.post('/updateuserinfo', UserControllers.updateUserInfoController);
 // Products for user
 router.get('/userproducts', UserProductControllers.userProductController);
 router.get("/viewproduct/:id", UserProductControllers.viewProductController);
-router.get("/productdetails", UserProductControllers.productDetailsController);
+router.post("/filterproduct", UserProductControllers.searchProductController);
+
+//Cart for user
+router.get("/addtocart", cartControllers.addToCartController);
+router.get("/viewcart", cartControllers.viewCartController);
+router.get("/deletecartproduct/:id", cartControllers.deleteCartProductController);
+router.post("/checkout", cartControllers.checkoutProductController);
 
 
 

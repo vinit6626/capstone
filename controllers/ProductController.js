@@ -362,7 +362,7 @@ console.log("file name: " + file_name);
     console.log("query");
     const mongoQueryObject = buildMongoQuery(req.body);
     console.log(mongoQueryObject);
-    
+    // if(req.body.productName == "" && )
     const product_data = await productDataModel.find(mongoQueryObject);
     console.log(product_data);
     console.log("product Fetched");
@@ -370,7 +370,7 @@ console.log("file name: " + file_name);
     const brand_data = await brandDataModel.find({});
     const category_data = await categoryDataModel.find({});
     res.render("product/manageproduct.ejs", {msg:"", email, type: req.session.userType, product_data, brand_data, category_data});
-  }
+  } 
   
 
 }
