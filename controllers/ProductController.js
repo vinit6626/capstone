@@ -41,10 +41,10 @@ class ProductControllers {
     const visibleCategoryCount = await categoryDataModel.countDocuments({ category_visibility: 'visible' });
 
 
-    res.render('product/product.ejs', { msg: "", email, type: req.session.userType, sku: uniqueSKU, brand, visibleBrandCount,  category, visibleCategoryCount });
+    res.render('product/product.ejs', { msg: "", email, type: req.session.userType, sku: uniqueSKU, brand, visibleBrandCount,  category, visibleCategoryCount, cart: req.session.cartItem });
 
     }else{
-      res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType});
+      res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType, cart: req.session.cartItem});
     }
   }
 
@@ -125,12 +125,12 @@ class ProductControllers {
                 const product_data = await productDataModel.find({});
                 const brand_data = await brandDataModel.find({});
                 const category_data = await categoryDataModel.find({});
-                res.render("product/manageproduct.ejs", {msg:"", email, type: req.session.userType, product_data, brand_data, category_data});
+                res.render("product/manageproduct.ejs", {msg:"", email, type: req.session.userType, product_data, brand_data, category_data, cart: req.session.cartItem});
             }catch(err){
                 res.redirect("/home");
             }
           }else{
-            res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType});
+            res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType, cart: req.session.cartItem});
           }
     }
 
@@ -208,7 +208,7 @@ class ProductControllers {
     const category = await categoryDataModel.find({});
     const visibleCategoryCount = await categoryDataModel.countDocuments({ category_visibility: 'visible' });
 
-          res.render("product/editproduct.ejs", { msg:"", email, type: req.session.userType, productdata, brand, visibleBrandCount, category, visibleCategoryCount});
+          res.render("product/editproduct.ejs", { msg:"", email, type: req.session.userType, productdata, brand, visibleBrandCount, category, visibleCategoryCount, cart: req.session.cartItem});
           // res.redirect("/managecategory");
       } catch (error) {
           console.log(error);
@@ -369,7 +369,7 @@ console.log("file name: " + file_name);
 
     const brand_data = await brandDataModel.find({});
     const category_data = await categoryDataModel.find({});
-    res.render("product/manageproduct.ejs", {msg:"", email, type: req.session.userType, product_data, brand_data, category_data});
+    res.render("product/manageproduct.ejs", {msg:"", email, type: req.session.userType, product_data, brand_data, category_data, cart: req.session.cartItem});
   } 
   
 

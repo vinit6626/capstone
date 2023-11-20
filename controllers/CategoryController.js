@@ -6,9 +6,9 @@ class CategoryControllers {
    static categoryController = async (req, res) => {
         const email = req.session.fname === "default" ? req.session.email : req.session.fname;
         if (req.session.email && req.session.userType) {
-            res.render('category/category.ejs', {msg: "", email, type: req.session.userType});
+            res.render('category/category.ejs', {msg: "", email, type: req.session.userType, cart: req.session.cartItem});
         }else{
-            res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType});
+            res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType, cart: req.session.cartItem});
         }
     }
     
@@ -20,7 +20,7 @@ class CategoryControllers {
             const findcategory = await categoryDataModel.find({category_name: req.body.categoryName});
 
             if(findcategory.length > 0) {
-                res.render('category/category.ejs', { msg: 'Category already exists', email, type: req.session.userType });
+                res.render('category/category.ejs', { msg: 'Category already exists', email, type: req.session.userType , cart: req.session.cartItem});
 
             }else{
                 const currentDate = new Date();
@@ -38,7 +38,7 @@ class CategoryControllers {
             res.redirect("/managecategory");
         } catch (error) {
             console.error(error);
-            res.render('category/category.ejs', { msg: 'An error occurred', email, type: req.session.userType });
+            res.render('category/category.ejs', { msg: 'An error occurred', email, type: req.session.userType, cart: req.session.cartItem });
         }
     }
 
@@ -48,13 +48,13 @@ class CategoryControllers {
           
             try{
                 const category_data = await categoryDataModel.find({});
-                res.render("category/managecategory.ejs", {msg:"", email, type: req.session.userType, category_data});
+                res.render("category/managecategory.ejs", {msg:"", email, type: req.session.userType, category_data, cart: req.session.cartItem});
             }catch(err){
                 console.error(err);
                 res.redirect("/home");
             }
         }else{
-        res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType});
+        res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType, cart: req.session.cartItem});
         }
     }
 
@@ -76,7 +76,7 @@ class CategoryControllers {
             const categorydata = await categoryDataModel.findById(categoryId);
 
             const email = req.session.fname === "default" ? req.session.email : req.session.fname;
-            res.render("category/editcategory.ejs", { msg:"", email, type: req.session.userType, categorydata})
+            res.render("category/editcategory.ejs", { msg:"", email, type: req.session.userType, categorydata, cart: req.session.cartItem})
             // res.redirect("/managecategory");
         } catch (error) {
             console.log(error);

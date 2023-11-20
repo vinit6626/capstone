@@ -11,56 +11,26 @@ class UserProductControllers {
 
         const email = req.session.fname === "default" ? req.session.email : req.session.fname;
 
-        // if (req.session.email && req.session.userType) {
+        if (req.session.email && req.session.userType) {
 
             const productsData = await productsDataModel.find({product_visibility: 'visible'});
             const brandData = await brandDataModel.find({});
             const categoryData = await categoryDataModel.find({});
-            res.render('userproduct/products.ejs', {msg: "", email, type: req.session.userType, productsData, brandData, categoryData});
-            // }else{
-            //     res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType});
-            // }
+            res.render('userproduct/products.ejs', {msg: "", email, type: req.session.userType, productsData, brandData, categoryData, cart: req.session.cartItem});
+            }else{
+                res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType, cart: req.session.cartItem});
+            }
     }
 
-  //   static viewProductController = async (req, res) => {
-  //       req.session.product_id = req.params.id;
-  //       res.redirect("/productdetails");
-  //   }
-    
+    static viewProductController = async (req, res) => {
+      const email = req.session.fname === "default" ? req.session.email : req.session.fname;
 
-  //   static productDetailsController = async (req, res) => {
-  //     const email = req.session.fname === "default" ? req.session.email : req.session.fname;
-  
-  //     try {
-  //         const product = await productsDataModel.findById(req.session.product_id);
-  //         console.log("product: " + product);
-  
-  //         const brandData = await brandDataModel.find({});
-  //         const categoryData = await categoryDataModel.find({ category_visibility: "visible" });
-  //         const suggestionProductsData = await productsDataModel.find({ product_visibility: 'visible', product_brand_id: product.product_brand_id, product_gender: product.product_gender });
-  
-  //         console.log("suggestions : "+ suggestionProductsData);
-  //         const productID = product ? product._id : null;
-  //         const brandID = product ? product.product_brand_id : null;
-  //         const categoryID = product ? product.product_category_id : null;
-  
-  //         const brandName = brandData.find(brand => brand._id.toString() === brandID);
-  //         const bname = brandName ? brandName.brand_name : "Unknown Brand";
-  //         const categoryName = categoryData.find(category => category._id.toString() === categoryID);
-  //         const cname = categoryName ? categoryName.category_name : "Unknown Category";
+      if (req.session.email && req.session.userType) {
 
-  //         res.render("userproduct/viewproduct.ejs", { msg: "", email, type: req.session.userType, product, brandData, categoryData, suggestionProductsData, bname, cname  });
-  //     } catch (error) {
-  //         console.error(error);
-  //     }
-  // }
-  
+      req.session.product_id = req.params.id;
+      console.log("received id: " + req.params.id);
 
-  static viewProductController = async (req, res) => {
-    req.session.product_id = req.params.id;
-    console.log("received id: " + req.params.id);
-
-    const email = req.session.fname === "default" ? req.session.email : req.session.fname;
+      const email = req.session.fname === "default" ? req.session.email : req.session.fname;
 
     try {
         // Use findOne instead of find if you expect a single result
@@ -68,7 +38,7 @@ class UserProductControllers {
 
         if (!product) {
             // Handle the case where the product is not found
-            res.render("userproduct/viewproduct.ejs", { msg: "Product not found", email, type: req.session.userType });
+            res.render("userproduct/viewproduct.ejs", { msg: "Product not found", email, type: req.session.userType, cart: req.session.cartItem });
             return;
         }
 
@@ -90,13 +60,16 @@ class UserProductControllers {
         const categoryName = categoryData.find(category => category._id.toString() === categoryID);
         const cname = categoryName ? categoryName.category_name : "Unknown Category";
 
-        res.render("userproduct/viewproduct.ejs", { msg: "", email, type: req.session.userType, product, brandData, categoryData, suggestionProductsData, bname, cname, mail: req.session.email });
+        res.render("userproduct/viewproduct.ejs", { msg: "", email, type: req.session.userType, product, brandData, categoryData, suggestionProductsData, bname, cname, mail: req.session.email, cart: req.session.cartItem  });
     } catch (error) {
         console.error(error);
         // Handle other errors, log them, or render an error page as needed
-        res.render("error.ejs", { msg: "An error occurred", email, type: req.session.userType });
+        res.render("error.ejs", { msg: "An error occurred", email, type: req.session.userType, cart: req.session.cartItem  });
     }
-}
+  }else{
+    res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType, cart: req.session.cartItem });
+  }
+  }
 
 
     static searchProductController = async (req, res) => {
@@ -127,7 +100,7 @@ class UserProductControllers {
         } else {
             return {};
         }
-        }
+      }
       
         console.log("query");
         const mongoQueryObject = buildMongoQuery(req.body);
@@ -146,7 +119,7 @@ class UserProductControllers {
     
         const brandData = await brandDataModel.find({});
         const categoryData = await categoryDataModel.find({});
-        res.render("userproduct/products.ejs", {msg:"", email, type: req.session.userType, productsData, brandData, categoryData});
+        res.render("userproduct/products.ejs", {msg:"", email, type: req.session.userType, productsData, brandData, categoryData, cart: req.session.cartItem });
       }
 
 

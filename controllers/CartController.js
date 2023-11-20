@@ -8,6 +8,7 @@ class cartControllers {
 
     console.log(req.query);
     const cartData_update = await cartDataModel.find({ product_id: req.query.product_id, size: req.query.selectedSize, user_id: req.query.user_email });
+    console.log("cart length: ", cartData_update.length);
     console.log("Query:", { product_id: req.query.product_id, size: req.query.selectedSize });
     console.log("Result:", cartData_update);
     
@@ -43,9 +44,10 @@ class cartControllers {
     
     const cartItems = await cartDataModel.find({user_id: mail});
     console.log(cartItems.length);
+    req.session.cartItem = cartItems.length;
     const productItems = await productDataModel.find();
 
-    res.render("cart/cart.ejs", {msg: "", email, type: req.session.userType, cartItems, productItems});
+    res.render("cart/cart.ejs", {msg: "", email, type: req.session.userType, cartItems, productItems, cart: req.session.cartItem});
   }
 
   static deleteCartProductController = async (req, res) => {
@@ -57,10 +59,6 @@ class cartControllers {
         console.log(error);
         res.redirect("/viewcart");
     }
-  }
-  static checkoutProductController = async (req, res) => {
-
-    console.log(req.body);
   }
 }
 

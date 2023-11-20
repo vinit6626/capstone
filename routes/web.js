@@ -20,6 +20,7 @@ const ProductControllers = require('../controllers/ProductController.js');
 const UserControllers = require('../controllers/UserController.js');
 const UserProductControllers = require('../controllers/UserProductController.js');
 const cartControllers = require('../controllers/CartController.js');
+const orderControllers = require('../controllers/OrderController.js');
 
 
 
@@ -95,7 +96,10 @@ router.post("/filterproduct", UserProductControllers.searchProductController);
 router.get("/addtocart", cartControllers.addToCartController);
 router.get("/viewcart", cartControllers.viewCartController);
 router.get("/deletecartproduct/:id", cartControllers.deleteCartProductController);
-router.post("/checkout", cartControllers.checkoutProductController);
+
+//order for user
+router.post("/checkout", orderControllers.orderCheckoutController);
+router.get("/orderhistory", orderControllers.orderHistoryController);
 
 
 

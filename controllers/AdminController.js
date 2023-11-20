@@ -6,7 +6,7 @@ function generateRandomCode() {
 }
 class AdminControllers {
     static adminLoginController = async (req, res) => {
-        res.render('adminlogin.ejs', {msg: "", email: "", type: ""});
+        res.render('adminlogin.ejs', {msg: "", email: "", type: "", cart: req.session.cartItem});
     }
 
     static registerAdminController = async (req, res) => {
@@ -74,13 +74,13 @@ class AdminControllers {
 
             const updatedUserDetails = req.session.fname === "default" ? req.session.email : req.session.fname;
             console.log(updatedUserDetails);
-            res.render("adminregistration.ejs", { msg: "Sign up Successful👍,  get your verification code from Trendify Admin.", email: updatedUserDetails, type: req.session.userType});
+            res.render("adminregistration.ejs", { msg: "Sign up Successful👍,  get your verification code from Trendify Admin.", email: updatedUserDetails, type: req.session.userType, cart: req.session.cartItem});
         } catch (error) {
             const updatedUserDetails = req.session.fname === "default" ? req.session.email : req.session.fname;
             console.log(updatedUserDetails);
             console.log("--- Sorry data is not added to DB due to error Below -----");
             console.error(error);
-            res.render("adminlogin.ejs", { msg: 'Please, sign up with a different email', email: updatedUserDetails, type:req.session.userType});
+            res.render("adminlogin.ejs", { msg: 'Please, sign up with a different email', email: updatedUserDetails, type:req.session.userType, cart: req.session.cartItem});
         }
     }
 
@@ -91,11 +91,11 @@ class AdminControllers {
                 const user = await adminDataModel.findOne({ email });
         
                 if (!user) {
-                    return res.render("forgotpassword.ejs", { msg: "User not found, please enter your valid email address" });
+                    return res.render("forgotpassword.ejs", { msg: "User not found, please enter your valid email address" , cart: req.session.cartItem});
                 }
         
                 if (user.verificationCode !== verificationCode) {
-                    return res.render("forgotpassword.ejs", { msg: "Invalid verification code" });
+                    return res.render("forgotpassword.ejs", { msg: "Invalid verification code", cart: req.session.cartItem });
                 }
         
                 const hashPassword = await bcrypt.hash(password, 10);
@@ -105,19 +105,19 @@ class AdminControllers {
             const updatedUserDetails = req.session.fname === "default" ? req.session.email : req.session.fname;
 
                 console.log("*** Password updated successfully ***");
-                res.render("adminlogin.ejs", { msg: "Password updated successfully", email: updatedUserDetails, type: req.session.userType });
+                res.render("adminlogin.ejs", { msg: "Password updated successfully", email: updatedUserDetails, type: req.session.userType, cart: req.session.cartItem});
             } catch (error) {
             const updatedUserDetails = req.session.fname === "default" ? req.session.email : req.session.fname;
 
                 console.error("Error updating password:", error);
-                res.render("adminregistration.ejs", { msg: "Password update failed", email: updatedUserDetails, type: req.session.userType });
+                res.render("adminregistration.ejs", { msg: "Password update failed", email: updatedUserDetails, type: req.session.userType, cart: req.session.cartItem });
             }
         }
 
         static createPasswordController = async (req, res) => {
             const updatedUserDetails = req.session.fname === "default" ? req.session.email : req.session.fname;
 
-            res.render('adminregistration.ejs', {msg: "", email: updatedUserDetails, type: req.session.userType});
+            res.render('adminregistration.ejs', {msg: "", email: updatedUserDetails, type: req.session.userType, cart: req.session.cartItem});
         }
 
         static adminVerificationController = async (req, res) => {
@@ -125,7 +125,7 @@ class AdminControllers {
             const confirm_user_in_db = await adminDataModel.findOne({ email: email })
             if (!confirm_user_in_db) {
                 console.log("hello");
-                res.render("login.ejs", { msg: "😢 User Not Found, Please Enter Valid Email" });
+                res.render("login.ejs", { msg: "😢 User Not Found, Please Enter Valid Email" , cart: req.session.cartItem});
             } else {
                 const isMatch = await bcrypt.compare(password, confirm_user_in_db.password);
                 if (isMatch) {
@@ -146,7 +146,7 @@ class AdminControllers {
                 } else {
             const updatedUserDetails = req.session.fname === "default" ? req.session.email : req.session.fname;
 
-                    res.render("adminlogin.ejs", { msg: "Incorrect Password 😔, Please Enter Valid Password",  email: updatedUserDetails, type: req.session.userType});
+                    res.render("adminlogin.ejs", { msg: "Incorrect Password 😔, Please Enter Valid Password",  email: updatedUserDetails, type: req.session.userType, cart: req.session.cartItem});
     
                 }
             }

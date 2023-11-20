@@ -11,9 +11,9 @@ class UserControllers {
         const userData = await userDataModel.find({userType: 'user'});
         console.log(`User ${userData}`);
 
-        res.render('user/manageuser.ejs', {msg: "", email, type: req.session.userType, userData});
+        res.render('user/manageuser.ejs', {msg: "", email, type: req.session.userType, userData, cart: req.session.cartItem});
         }else{
-            res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType});
+            res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType, cart: req.session.cartItem});
         }
     }
 
@@ -64,12 +64,12 @@ class UserControllers {
                 } else {
                     console.log('Successfully updated user');
                 }
-                res.render('user/edituser.ejs', {msg: "", email, type: req.session.userType, userData});
+                res.render('user/edituser.ejs', {msg: "", email, type: req.session.userType, userData, cart: req.session.cartItem});
             } catch (error) {
                 res.redirect("/manageuser");
             }
         }else{
-            res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType});
+            res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType, cart: req.session.cartItem});
         }
     }
 

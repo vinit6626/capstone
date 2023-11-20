@@ -1,4 +1,6 @@
 const userDataModel = require('../models/userdb.js');
+const cartDataModel = require('../models/cartdb.js');
+
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 function generateRandomCode() {
@@ -8,7 +10,7 @@ class TrendifyController {
     static loginController = async (req, res) => {
         const updatedUserDetails = req.session.fname === "default" ? req.session.email : req.session.fname;
         const type = req.session.userType || "";
-        res.render('login.ejs', {msg: "", email: updatedUserDetails, type: ""});
+        res.render('login.ejs', {msg: "", email: updatedUserDetails, type: "", cart: req.session.cartItem});
     }
     static registerUserController = async (req, res) => {
         try {
@@ -23,11 +25,11 @@ class TrendifyController {
 
             console.log("*** data added successfully to DB ***");
             console.log(userData_inserted);
-            res.render("login.ejs", { msg: "Sign up Successful👍", type: "", email:""});
+            res.render("login.ejs", { msg: "Sign up Successful👍", type: "", email:"", cart: req.session.cartItem});
         } catch (error) {
             console.log("--- Sorry data is not added to DB due to error Below -----");
             console.error(error);
-            res.render("login.ejs", { msg: 'Please, sign up with a different email', type: "", email:""});
+            res.render("login.ejs", { msg: 'Please, sign up with a different email', type: "", email:"", cart: req.session.cartItem});
         }
     }
     
@@ -58,14 +60,14 @@ class TrendifyController {
                     console.log("deactive");
                     const updatedUserName = req.session.fname === "default" ? req.session.email : req.session.fname; 
 
-                res.render("login.ejs", { msg: "Your account is deactivated by Admin. To active your account please contact to the Admin.", email: updatedUserName, type: req.session.userType });
+                res.render("login.ejs", { msg: "Your account is deactivated by Admin. To active your account please contact to the Admin.", email: updatedUserName, type: req.session.userType , cart: req.session.cartItem});
 
                 }
             } else {
         
                 const updatedUserName = req.session.fname === "default" ? req.session.email : req.session.fname; 
 
-                res.render("login.ejs", { msg: "Incorrect Password 😔, Please Enter Valid Password", email: updatedUserName, type: req.session.userType });
+                res.render("login.ejs", { msg: "Incorrect Password 😔, Please Enter Valid Password", email: updatedUserName, type: req.session.userType, cart: req.session.cartItem });
 
             }
         }
@@ -95,7 +97,7 @@ class TrendifyController {
           }
         }
         const updatedUserName = req.session.fname === "default" ? req.session.email : req.session.fname; 
-        res.render('profile.ejs', { msg: '', email: updatedUserName, type, userData });
+        res.render('profile.ejs', { msg: '', email: updatedUserName, type, userData, cart: req.session.cartItem });
       };
       
     
@@ -124,17 +126,17 @@ class TrendifyController {
             const updatedUserName = req.session.fname === "default" ? req.session.email : req.session.fname;
             if (result) {
               console.log('User updated:', result);
-              res.render('profile.ejs', { msg: 'Your details updated successfully', email: updatedUserName, type, userData: result });
+              res.render('profile.ejs', { msg: 'Your details updated successfully', email: updatedUserName, type, userData: result , cart: req.session.cartItem});
             } else {
               console.log('User not found');
-              res.render('profile.ejs', { msg: 'User not found', email, type, userData: {} });
+              res.render('profile.ejs', { msg: 'User not found', email, type, userData: {} , cart: req.session.cartItem});
             }
           } catch (error) {
             console.error('Error updating user:', error);
-            res.render('profile.ejs', { msg: 'Error updating user', email, type, userData: {} });
+            res.render('profile.ejs', { msg: 'Error updating user', email, type, userData: {} , cart: req.session.cartItem});
           }
         } else {
-          res.render("login.ejs", { msg: "Session Expired, Please login again" });
+          res.render("login.ejs", { msg: "Session Expired, Please login again" , cart: req.session.cartItem});
         }
     }
 
@@ -166,13 +168,13 @@ class TrendifyController {
     static forgotpasswordController = async (req, res) => {
         const email = req.session.fname === "default" ? req.session.email : req.session.fname;
         const type = req.session.userType || "";
-        res.render("forgotpassword.ejs", { msg: "", email, type}); 
+        res.render("forgotpassword.ejs", { msg: "", email, type, cart: req.session.cartItem}); 
     }
     
     static passwordresetController = async (req, res) => {
         const email = req.session.fname === "default" ? req.session.email : req.session.fname; 
         const type = req.session.userType || "";
-        res.render("passwordreset.ejs", {msg: "", email, type});
+        res.render("passwordreset.ejs", {msg: "", email, type, cart: req.session.cartItem});
     }
 
     
@@ -184,7 +186,7 @@ class TrendifyController {
         if (!confirm_user_in_db) {
             console.log("hello");
             const email = req.session.fname === "default" ? req.session.email : req.session.fname;
-            res.render("passwordreset.ejs", { msg: "😢 User Not Found, Please Enter Valid Email", email: email, type: req.session.userType });
+            res.render("passwordreset.ejs", { msg: "😢 User Not Found, Please Enter Valid Email", email: email, type: req.session.userType , cart: req.session.cartItem});
         } else {
             const randomCode = generateRandomCode();
     
@@ -224,11 +226,11 @@ class TrendifyController {
                 const updatedUserName = req.session.fname === "default" ? req.session.email : req.session.fname; 
         
                 if (!user) {
-                    return res.render("forgotpassword.ejs", { msg: "User not found, please enter your valid email address", email: updatedUserName, type: req.session.userType  });
+                    return res.render("forgotpassword.ejs", { msg: "User not found, please enter your valid email address", email: updatedUserName, type: req.session.userType , cart: req.session.cartItem });
                 }
         
                 if (user.verificationCode !== verificationCode) {
-                    return res.render("forgotpassword.ejs", { msg: "Invalid verification code", email: updatedUserName, type: req.session.userType  });
+                    return res.render("forgotpassword.ejs", { msg: "Invalid verification code", email: updatedUserName, type: req.session.userType , cart: req.session.cartItem });
                 }
         
                 const hashPassword = await bcrypt.hash(password, 10);
@@ -236,12 +238,12 @@ class TrendifyController {
                 await userDataModel.updateOne({ email }, { password: hashPassword, verificationCode: 'default' });
         
                 console.log("*** Password updated successfully ***");
-                res.render("login.ejs", { msg: "Password updated successfully", email: updatedUserName, type: req.session.userType });
+                res.render("login.ejs", { msg: "Password updated successfully", email: updatedUserName, type: req.session.userType , cart: req.session.cartItem});
             } catch (error) {
         const updatedUserName = req.session.fname === "default" ? req.session.email : req.session.fname; 
 
                 console.error("Error updating password:", error);
-                res.render("forgotpassword.ejs", { msg: "Password update failed", email: updatedUserName, type: req.session.userType });
+                res.render("forgotpassword.ejs", { msg: "Password update failed", email: updatedUserName, type: req.session.userType , cart: req.session.cartItem});
             }
         
     }
@@ -250,18 +252,23 @@ class TrendifyController {
 
         const email = req.session.fname === "default" ? req.session.email : req.session.fname; 
         const type = req.session.userType || "";
-        res.render('home.ejs', {email, type});
+
+        const cartItems = await cartDataModel.find({user_id: req.session.email});
+        console.log(cartItems.length);
+        req.session.cartItem = cartItems.length;
+
+        res.render('home.ejs', {email, type, cart: req.session.cartItem});
     }
 
     static contactusController = async (req, res) => {
         const email = req.session.fname === "default" ? req.session.email : req.session.fname; 
         const type = req.session.userType || "";
-        res.render('contactus.ejs', {email, type});
+        res.render('contactus.ejs', {email, type, cart: req.session.cartItem});
     }
     static aboutusController = async (req, res) => {
         const email = req.session.fname === "default" ? req.session.email : req.session.fname; 
         const type = req.session.userType || "";
-        res.render('aboutus.ejs', {email, type});
+        res.render('aboutus.ejs', {email, type, cart: req.session.cartItem});
     }
 }
 

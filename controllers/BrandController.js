@@ -5,9 +5,9 @@ class BrandControllers {
     static brandController = async (req, res) => {
         const email = req.session.fname === "default" ? req.session.email : req.session.fname;
         if (req.session.email && req.session.userType) {
-            res.render('brand.ejs', {msg: "", email, type: req.session.userType});
+            res.render('brand.ejs', {msg: "", email, type: req.session.userType, cart: req.session.cartItem});
         }else{
-          res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType});
+          res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType, cart: req.session.cartItem});
         }
     }
 
@@ -18,7 +18,7 @@ class BrandControllers {
             const findbrand = await brandDataModel.find({brand_name: req.body.brandName});
 
             if(findbrand.length > 0) {
-                res.render('brand.ejs', { msg: 'Brand already exists', email, type: req.session.userType });
+                res.render('brand.ejs', { msg: 'Brand already exists', email, type: req.session.userType, cart: req.session.cartItem });
 
             }else{
                 const currentDate = new Date();
@@ -36,7 +36,7 @@ class BrandControllers {
             res.redirect("/managebrand");
         } catch (error) {
             console.error(error);
-            res.render('brand.ejs', { msg: 'An error occurred', email, type: req.session.userType });
+            res.render('brand.ejs', { msg: 'An error occurred', email, type: req.session.userType, cart: req.session.cartItem });
         }
     }
     static manageBrandController = async (req, res) => {
@@ -45,13 +45,13 @@ class BrandControllers {
           
         try{
             const brand_data = await brandDataModel.find({});
-            res.render("managebrand.ejs", {msg:"", email, type: req.session.userType, brand_data});
+            res.render("managebrand.ejs", {msg:"", email, type: req.session.userType, brand_data, cart: req.session.cartItem});
         }catch(err){
             console.error(err);
             res.redirect("/home");
         }
         }else{
-            res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType});
+            res.render("login.ejs", { msg: "Please login to access our service.", email, type: req.session.userType, cart: req.session.cartItem});
           }
     }
     
@@ -78,7 +78,7 @@ class BrandControllers {
             const branddata = await brandDataModel.findById(brandId);
 
             const email = req.session.fname === "default" ? req.session.email : req.session.fname;
-            res.render("editbrand.ejs", { msg:"", email, type: req.session.userType, branddata})
+            res.render("editbrand.ejs", { msg:"", email, type: req.session.userType, branddata, cart: req.session.cartItem})
         } catch (error) {
             console.log(error);
             res.redirect("/managebrand");
