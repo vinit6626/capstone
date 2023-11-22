@@ -100,6 +100,7 @@ router.get("/deletecartproduct/:id", cartControllers.deleteCartProductController
 //order for user
 router.post("/checkout", orderControllers.orderCheckoutController);
 router.get("/orderhistory", orderControllers.orderHistoryController);
+router.get("/orderdetails/:id", orderControllers.orderDetailsController);
 
 
 

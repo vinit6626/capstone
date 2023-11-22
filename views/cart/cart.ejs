@@ -48,8 +48,8 @@
     <% if (cartItems.length > 0) { %>
 
     <hr>
-    <h5 id="subtotal" class="text-right" style="font-weight: bold;">Total: $0.00</h5>
-    <input type="hidden" name="total" value="">
+    <h5 id="subtotal" class="text-right" style="font-weight: bold;" >Total: $0.00</h5>
+    <input type="hidden" name="total" id="total" value="">
     
     <hr>
     <div class="text-right">
@@ -110,6 +110,7 @@
 </form>
 
 
+<script src="https://js.stripe.com/v3/"></script>
 
   
 
@@ -142,4 +143,61 @@
       $("#checkoutDetails").toggle();
     });
   });
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const checkoutButton = document.getElementById('checkoutButton');
+
+  checkoutButton.addEventListener('click', function () {
+    // Client-side input validation
+    if (!validateInputs()) {
+      // alert('Please fill in all required fields and ensure data is valid.');
+      return;
+    }
+
+    // Toggle visibility
+    document.getElementById('checkoutDetails').style.display = 'block';
+
+    // Fetch the total and send the order data
+    const fullName = document.getElementById('fullName').value;
+    const total = document.getElementById('total').value;
+    const orderData = {
+      fullName: fullName,
+      total: total,
+    };
+
+    // Make the HTTP request to your server
+    fetch('/checkout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(orderData),
+    })
+      .then(response => response.json())
+      .then(result => {
+        // Handle the result from the server
+        console.log(result);
+      })
+      .catch(error => {
+        // Handle errors
+        console.error(error);
+      });
+  });
+
+  function validateInputs() {
+    // You can add more validation logic here
+    const requiredFields = ['fullName', 'address', 'zipCode', 'province', 'phoneNumber', 'cardNumber', 'cardHolderName', 'expiryDate', 'cvv'];
+
+    for (const field of requiredFields) {
+      const value = document.getElementById(field).value.trim();
+      if (!value) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+});
 </script>

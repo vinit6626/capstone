@@ -7,6 +7,7 @@ mongoose.set('strictQuery', false);
 // });
 
 const orderDataSchema = mongoose.Schema({
+    order_id: { type: String, default: 'default'},
     product_title:  {type: String, default:'default'},
     product_price:  {type: String, default:'default' },
     product_size:  {type: String, default:'default' },
@@ -21,7 +22,8 @@ const orderDataSchema = mongoose.Schema({
     card_number: {type: String, default: 'default'},
     card_holder: {type: String, default: 'default'},
     card_expiry: {type: String, default: 'default'},
-    card_cvv: {type: String, default: 'default'}
+    card_cvv: {type: String, default: 'default'},
+    order_date: {type: String, default: 'default'},
 });
 
 const orderDataModel = mongoose.model("order", orderDataSchema);
