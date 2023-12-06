@@ -81,6 +81,8 @@ class OrderContoller {
         const cart_clear = await cartDataModel.deleteMany({ user_id: req.session.email });
         const currentDate = new Date();
         const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()} ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
+        const expectedDeliveryDate = new Date(formattedDate);
+        expectedDeliveryDate.setDate(expectedDeliveryDate.getDate() + 7);
 
             const orderData_inserted = await orderDataModel.create({
                 order_id : order_id,
@@ -95,11 +97,8 @@ class OrderContoller {
                 user_zipcode : req.body.zipCode,
                 user_province : req.body.province,
                 user_phone : req.body.phoneNumber,
-                card_number : req.body.cardNumber,
-                card_holder : req.body.cardHolderName,
-                card_expiry : req.body.expiryDate,
-                card_cvv : req.body.cvv,
-                order_date: formattedDate
+                order_date: formattedDate,
+                expected_delivery_date: expectedDeliveryDate.toISOString().substring(0, 10),
             });
             req.session.cart = 0;
             if(orderDataModel){
@@ -117,49 +116,93 @@ class OrderContoller {
     }
     
     static orderHistoryController = async (req, res) => {
-    const email = req.session.fname === "default" ? req.session.email : req.session.fname;
+          const email = req.session.fname === "default" ? req.session.email : req.session.fname;
 
-        const history = await orderDataModel.find({user_id: req.session.email});
+              const history = await orderDataModel.find({user_id: req.session.email});
+              const productItems = await productDataModel.find();
+              console.log(history);
+              console.log(history.length);
+              console.log(productItems);
+              res.render("order_history/orderhistory.ejs", {msg: "", email, type: req.session.userType, history, cart: 0, productItems,});
+      }
+
+      static orderDetailsController = async (req, res) => {
+            const email = req.session.fname === "default" ? req.session.email : req.session.fname;
+        const id = req.params.id;
+
+        try {
+          const orderDetails = await orderDataModel.find({ order_id: id });
+
+          if (orderDetails.length === 0) {
+            // Handle case where no order details are found
+            return res.render("order_history/invoice.ejs", { msg: "Order not found", email, type: req.session.userType });
+          }
+
+          const productTitles = orderDetails[0].product_title;
+
+          // Check if productTitles is a string and parse it into an array
+          const titlesArray = typeof productTitles === 'string' ? JSON.parse(productTitles) : productTitles;
+
+          res.render("order_history/invoice.ejs", {
+            msg: "",
+            email,
+            type: req.session.userType,
+            invoice: orderDetails,
+            cart: req.session.cartItem,
+            productTitles: titlesArray
+          });
+
+        } catch (error) {
+          console.error('Error in order details route:', error);
+          res.status(500).json({ error: 'Internal Server Error', details: error.message });
+        }
+  
+      }
+      static manageOrderController = async (req, res) => {
+        const email = req.session.fname === "default" ? req.session.email : req.session.fname;
+
+        const history = await orderDataModel.find();
         const productItems = await productDataModel.find();
         console.log(history);
-        console.log(history.length);
+        res.render("order_history/manageorders.ejs", {msg: "", email, type: req.session.userType, history, cart: 0, productItems,});  
+      }
+
+      static orderStatusController = async (req, res) => {
+        const id = req.params.id;
+        
+        const email = req.session.fname === "default" ? req.session.email : req.session.fname;
+
+        const history = await orderDataModel.find({order_id: id});
+        const productItems = await productDataModel.find();
+        console.log(history);
         console.log(productItems);
-        res.render("order_history/orderhistory.ejs", {msg: "", email, type: req.session.userType, history, cart: 0, productItems,});
-    }
+        res.render("manageorder/orderstatus.ejs", {msg: "", email, type: req.session.userType, history, cart: 0, productItems,});  
+      }
 
-    static orderDetailsController = async (req, res) => {
-      const email = req.session.fname === "default" ? req.session.email : req.session.fname;
-  const id = req.params.id;
 
-  try {
-    const orderDetails = await orderDataModel.find({ order_id: id });
+      static statusController = async (req, res) => {
+        console.log(req.body);
+      
+        const orderid = req.body.orderid;
+        let statusArray;
+      
+        if (Array.isArray(req.body.status)) {
+          statusArray = req.body.status.map(Number);
+        } else {
+          statusArray = [Number(req.body.status)];
+        }
+      
+        const maxStatus = Math.max(...statusArray);
+      
+        console.log(`Maximum Status for order ${orderid}: ${maxStatus}`);
 
-    if (orderDetails.length === 0) {
-      // Handle case where no order details are found
-      return res.render("order_history/invoice.ejs", { msg: "Order not found", email, type: req.session.userType });
-    }
+        const update_status = await orderDataModel.findOneAndUpdate({ order_id: req.body.orderid }, {
+          delivered: maxStatus 
+        });
 
-    const productTitles = orderDetails[0].product_title;
-
-    // Check if productTitles is a string and parse it into an array
-    const titlesArray = typeof productTitles === 'string' ? JSON.parse(productTitles) : productTitles;
-
-    res.render("order_history/invoice.ejs", {
-      msg: "",
-      email,
-      type: req.session.userType,
-      invoice: orderDetails,
-      cart: req.session.cartItem,
-      productTitles: titlesArray
-    });
-
-  } catch (error) {
-    console.error('Error in order details route:', error);
-    res.status(500).json({ error: 'Internal Server Error', details: error.message });
-  }
-  
-
-}
+        res.redirect("/manageorder");
+      }
+      
 }
 
 module.exports = OrderContoller

@@ -1,0 +1,125 @@
+<%- include("../partials/header.ejs") -%>
+
+
+<div class="container mt-4">
+    <h2 class="text-center">Order Status</h2>
+    <hr>
+    <form action="/status" method="POST">
+
+    <!-- Order Details -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <h5>Order Details</h5>
+        <input type="hidden" name="orderid" value="<%= history[0].order_id %>" >
+        <p><strong>Order ID:</strong> <%= history[0].order_id %></p>
+        <p><strong>Order Date:</strong> <%= history[0].order_date %></p>
+        <p><strong>Expected Delivery Date:</strong> <%= history[0].expected_delivery_date %></p>
+      </div>
+      <div class="col-md-6">
+        <h5>Shipping Details</h5>
+        <p><strong>Address:</strong> <%= history[0].user_address %></p>
+        <p><strong>Zipcode:</strong> <%= history[0].user_zipcode %></p>
+        <p><strong>Province:</strong> <%= history[0].user_province %></p>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- Contact Details -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <h5>Contact Details</h5>
+        <p><strong>Phone:</strong> <%= history[0].user_phone %></p>
+        <p><strong>Email:</strong> <%= history[0].user_id %></p>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- Product Details Table -->
+    <h5>Product Details</h5>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Product Image</th>
+          <th>Product Title</th>
+          <th>Quantity</th>
+          <th>Size</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Total Price</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <!-- Loop through each product -->
+        <% history.forEach((item, index) => { %>
+            <% const productTitles = JSON.parse(item.product_title); %>
+            <% const productPrices = JSON.parse(item.product_price); %>
+            <% const productSizes = JSON.parse(item.product_size); %>
+            <% const productQuantities = JSON.parse(item.product_quantity); %>
+          
+            <% if (Array.isArray(productTitles)) { %>
+              <% for (let i = 0; i < productTitles.length; i++) { %>
+<% const productIndex = productItems.findIndex(product => product.product_title === productTitles[i]); %>
+<% if (productIndex !== -1) { %>
+<% const product = productItems[productIndex]; %>
+                <tr>
+                  <td><img src="../uploads/<%= product.product_image_path %>" alt="<%= product.product_image_path %>" style ="width:120px;"></td>
+                  <td><%= product.product_sku %></td>
+                  <td><%= productTitles[i] %></td>
+                  <td><%= productSizes[i] %></td>
+                  <td>$<%= productPrices[i] %></td>
+                  <td><%= productQuantities[i] %></td>
+                  <td>$<%= productPrices[i] * productQuantities[i] %></td>
+                </tr>
+                <% } %>
+              <% } %>
+            <% } else { %>
+                <% const productIndex = productItems.findIndex(product => product.product_title === productTitles); %>
+                <% if (productIndex !== -1) { %>
+                  <% const product = productItems[productIndex]; %>
+                  <tr>
+                    <td><img src="../uploads/<%= product.product_image_path %>" alt="<%= product.product_image_path %>" style="width:120px;"></td>
+                    <td><%= product.product_sku %></td>
+                    <td><%= productTitles %></td>
+                    <td><%= productSizes %></td>
+                    <td>$<%= productPrices %></td>
+                    <td><%= productQuantities %></td>
+                    <td>$<%= productPrices * productQuantities %></td>
+                </tr>
+            <% } %>
+            <% } %>
+          
+          <% }); %>
+      </tbody>
+    </table>
+    <hr>
+    <h5 class="text-right">Grand Total: $<%= history[0].product_grand_total %></h5>
+  </div>
+  <div class="container mt-4">
+    <h2>Order Status</h2>
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" id="orderAccept" value="1" name="status" <%= history[0].delivered >= 1 ? 'checked' : '' %>>
+      <label class="form-check-label" for="orderAccept">Order Accept</label>
+    </div>
+
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" id="packedReady" value="2" name="status" <%= history[0].delivered >= 2 ? 'checked' : '' %>>
+      <label class="form-check-label" for="packedReady">Packed and Ready to Ship</label>
+    </div>
+
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" id="shipped" value="3" name="status" <%= history[0].delivered >= 3 ? 'checked' : '' %>>
+      <label class="form-check-label" for="shipped">Shipped</label>
+    </div>
+
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" id="delivered" value="4" name="status" <%= history[0].delivered >= 4 ? 'checked' : '' %>>
+      <label class="form-check-label" for="delivered">Delivered</label>
+    </div>
+
+      <button type="submit" class="btn btn-primary mt-3">Update Status</button>
+    </form>
+  </div>
+<%- include("../partials/footer.ejs") -%>

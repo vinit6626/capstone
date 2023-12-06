@@ -6,9 +6,11 @@
     <thead>
       <tr>
         <th scope="col">#</th>
+        <th scope="col">Order ID</th>
         <th scope="col">Product Name</th>
         <th scope="col">Order Date</th>
         <th scope="col">Status</th>
+        <th scope="col">View Invoice</th>
       </tr>
     </thead>
     <tbody>
@@ -26,8 +28,20 @@
             <% } %>
           </td>
           <td><%= item.order_date.toString().substring(0, 10) %></td>
-          <td><button class="btn btn-success">Track Order</button></td>
-          <td><a href="orderdetails/<%= item.order_id %>"><button class="btn btn-primary">View Invoice</button></a></td>
+          <td>
+            <% if (item.delivered === '1') { %>
+              <b>Order Accept </b>
+            <% } else if (item.delivered === '2') { %>
+              <b>Packed and Ready for Shipped</b>
+            <% } else if (item.delivered === '3') { %>
+              <b>Shipped</b>
+            <% } else if (item.delivered === '4') { %>
+              <b>Delivered</b>
+            <% } else { %>
+              <b><%= item.delivered %></b>
+            <% } %>
+          </td>
+          <td><a href="orderstatus/<%= item.order_id %>"><button class="btn btn-primary"><i class="fa-solid fa-receipt" style="color: #ffffff;"></i></button></a></td>
         </tr>
       <% }); %>
     </tbody>

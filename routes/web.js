@@ -101,7 +101,11 @@ router.get("/deletecartproduct/:id", cartControllers.deleteCartProductController
 router.post("/checkout", orderControllers.orderCheckoutController);
 router.get("/orderhistory", orderControllers.orderHistoryController);
 router.get("/orderdetails/:id", orderControllers.orderDetailsController);
+router.get("/manageorder", orderControllers.manageOrderController);
 
+//Manage Order - status
+router.get("/orderstatus/:id", orderControllers.orderStatusController);
+router.post("/status", orderControllers.statusController);
 
 
 module.exports = router

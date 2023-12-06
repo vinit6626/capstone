@@ -24,6 +24,9 @@ const orderDataSchema = mongoose.Schema({
     card_expiry: {type: String, default: 'default'},
     card_cvv: {type: String, default: 'default'},
     order_date: {type: String, default: 'default'},
+    expected_delivery_date: {type: String, default: 'default'},
+    delivered: {type: String, default: 'We will update you soon.'},
+    returned: {type: String, default: 'no'},
 });
 
 const orderDataModel = mongoose.model("order", orderDataSchema);
