@@ -19,11 +19,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.listen(2700, ()=>{
-    console.log("Running at 2700");
-})
-
-
+const port = process.env.PORT || '2700';
+app.listen(port, () => console.log(`Server started on Port ${port}`));
+    
 app.get('/', (req, res) => {
     res.send('Hello world');
   });
